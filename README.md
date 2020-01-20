@@ -1,4 +1,4 @@
 # scripts
 Just Noob Script, XD
 
-For simplify compile kernel
+For simplify compile kernel in local
