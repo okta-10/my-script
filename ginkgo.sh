@@ -9,7 +9,7 @@ echo -e "$yellow"
 # environtment
 KERNEL_DIR=$PWD
 KERNEL_OUT=$pwd/out/arch/arm64/boot/Image.gz-dtb
-CONFIG=$pwd/mystic-ginkgo_defconfig
+CONFIG=$pwd/vendor/mystic-ginkgo_defconfig
 CORE="$(grep -c '^processor' /proc/cpuinfo)"
 CCACHE="$(command -v ccache)"
 
