@@ -15,8 +15,8 @@ CCACHE="$(command -v ccache)"
 
 # Toolchain setup
 export ARCH="arm64"
-CROSS_COMPILE="$PWD/../Toolchains/aarch64-49/bin/aarch64-linux-android-"
-CROSS_COMPILE_ARM32="$PWD/../Toolchains/arm-49/bin/arm-linux-androideabi-"
+CROSS_COMPILE="$PWD/../Toolchains/aarch64-ubertc/bin/aarch64-linux-android-"
+CROSS_COMPILE_ARM32="$PWD/../Toolchains/arm-ubertc/bin/arm-linux-androideabi-"
 
 # Export
 export CCACHE CORE CROSS_COMPILE CROSS_COMPILE_ARM32
