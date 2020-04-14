@@ -49,13 +49,14 @@ while true; do
     echo -e "$yellowb"
     echo -e " Menu                                                               "
     echo -e " ╔═════════════════════════════════════════════════════════════════╗"
-    echo -e " ║ 1. Build For Whyred (Redmi Note 5 Pro)                          ║"
-    echo -e " ║ 2. Build For Tulip (Redmi Note 6 Pro)                           ║"
-    echo -e " ║ 3. Build For Wayne (Mi 6X)                                      ║"
-    echo -e " ║ 4. Clean Out Dir                                                ║"
+    echo -e " ║ 1. Build For Whyred (Xiaomeme - Redmi Note 5 Pro)               ║"
+    echo -e " ║ 2. Build For Tulip (Xiaomeme - Redmi Note 6 Pro)                ║"
+    echo -e " ║ 3. Build For Wayne (Xiaomeme - Mi 6X)                           ║"
+    echo -e " ║ 4. Build For RMX1921 (Realmeme - XT)                            ║"
+    echo -e " ║ 5. Clean Out Dir                                                ║"
     echo -e " ║ e. Exit                                                         ║"
     echo -e " ╚═════════════════════════════════════════════════════════════════╝"
-    echo -ne "\n Enter your choice 1-4, or press 'e' For Exit : "
+    echo -ne "\n Enter your choice 1-5, or press 'e' For Exit : "
 
     read menu
 
@@ -74,8 +75,13 @@ while true; do
         ./wayne.sh
     fi
 
-    # Clean Out Dir
+    # Rmx1921
     if [ "$menu" == "4" ]; then
+        ./rmx1921.sh
+    fi
+
+    # Clean Out Dir
+    if [ "$menu" == "5" ]; then
         make O=out clean
         make mrproper
         rm -rf out/*
