@@ -52,8 +52,9 @@ while true; do
     echo -e " ║ 1. Build For Whyred (Xiaomeme - Redmi Note 5 Pro)               ║"
     echo -e " ║ 2. Build For Tulip (Xiaomeme - Redmi Note 6 Pro)                ║"
     echo -e " ║ 3. Build For Wayne (Xiaomeme - Mi 6X)                           ║"
-    echo -e " ║ 4. Build For RMX1921 (Realmeme - XT)                            ║"
-    echo -e " ║ 5. Clean Out Dir                                                ║"
+    echo -e " ║ 4. Build For Jasmine (Xiaomeme - Mi A2)                         ║"
+    echo -e " ║ 5. Build For RMX1921 (Realmeme - XT)                            ║"
+    echo -e " ║ 6. Clean Out Dir                                                ║"
     echo -e " ║ e. Exit                                                         ║"
     echo -e " ╚═════════════════════════════════════════════════════════════════╝"
     echo -ne "\n Enter your choice 1-5, or press 'e' For Exit : "
@@ -75,13 +76,18 @@ while true; do
         ./wayne.sh
     fi
 
-    # Rmx1921
+    # Jasmine
     if [ "$menu" == "4" ]; then
+        ./jasmine.sh
+    fi
+
+    # Rmx1921
+    if [ "$menu" == "5" ]; then
         ./rmx1921.sh
     fi
 
     # Clean Out Dir
-    if [ "$menu" == "5" ]; then
+    if [ "$menu" == "6" ]; then
         make O=out clean
         make mrproper
         rm -rf out/*
