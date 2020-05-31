@@ -8,7 +8,8 @@ echo -e "$green"
 
 # environtment
 KERNEL_DIR=$PWD
-KERNEL_OUT=$KERNEL_DIR/out/arch/arm64/boot/Image.gz-dtb
+KERNEL_OUT=$KERNEL_DIR/out/arch/arm64/boot/Image.gz
+KERN_DTB=$KERNEL_DIR/out/arch/arm64/boot/dts/qcom/sdm636-mtp_e7t.dtb
 AK3_DIR=$KERNEL_DIR/../AnyKernel3
 CONFIG=mystic-tulip_defconfig
 CORE="$(grep -c '^processor' /proc/cpuinfo)"
@@ -32,7 +33,9 @@ while true; do
     echo -e " ║ 1. Export Tulip defconfig to Out Dir                            ║"
     echo -e " ║ 2. Start Compile GCC Only                                       ║"
     echo -e " ║ 3. Start Compile With Clang                                     ║"
-    echo -e " ║ 4. Copy Image.gz-dtb to Flashable Dir                           ║"
+    echo -e " ║ 4. Copy Image.gz to Flashable Dir                               ║"
+    echo -e " ║ 5. Copy dtb-uc to Flashable Dir                                 ║"
+    echo -e " ║ 6. Copy dtb-oc to Flashable Dir                                 ║"    
     echo -e " ║ e. Back Main Menu                                               ║"
     echo -e " ╚═════════════════════════════════════════════════════════════════╝"
     echo -ne "\n Enter your choice 1-4, or press 'e' for back to Main Menu : "
@@ -102,9 +105,27 @@ while true; do
     # Move kernel to flashable dir
     if [[ "$menu" == "4" ]]; then
         cd $AK3_DIR
-        cp $KERNEL_OUT $AK3_DIR/Image.gz-dtb
+        cp $KERNEL_OUT $AK3_DIR/kernel/Image.gz
 
-        echo -e "\n (i) Done moving kernel to $AK3_DIR"
+        echo -e "\n (i) Done moving kernel img to $AK3_DIR"
+    fi
+
+    # Copy dtb uc to flashable dir
+    if [ "$choice" == "5" ]; then
+        cd $AK3_DIR
+        cp $KERN_DTB $AK3_DIR/dtbs/fucek.dtb-uc
+        cd ..
+
+        echo -e "\n(i) Done moving dtb-uc to $AK3_DIR."
+    fi
+
+    # Copy dtb oc to flashable dir
+    if [ "$choice" == "6" ]; then
+        cd $AK3_DIR
+        cp $KERN_DTB $AK3_DIR/dtbs/fucek.dtb-oc
+        cd ..
+
+        echo -e "\n(i) Done moving dtb-oc to $AK3_DIR."
     fi
 
     # Exit
