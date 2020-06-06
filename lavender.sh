@@ -10,7 +10,8 @@ echo -e "$red"
 KERNEL_DIR=$PWD
 KERNEL_OUT=$KERNEL_DIR/out/arch/arm64/boot/Image.gz-dtb
 AK3_DIR=$KERNEL_DIR/../AnyKernel3
-CONFIG=mystic-lavender_defconfig
+CONFIG_OLDCAM=mystic-lavender_defconfig
+CONFIG_NEWCAM=mystic-lavender-newcam_defconfig
 CORE="$(grep -c '^processor' /proc/cpuinfo)"
 
 # Setup GCC Toolchain
@@ -29,25 +30,33 @@ while true; do
 	echo -e ""
     echo -e " Menu                                                               "
     echo -e " ╔═════════════════════════════════════════════════════════════════╗"
-    echo -e " ║ 1. Export Lavender defconfig to Out Dir                         ║"
-    echo -e " ║ 2. Start Compile GCC Only                                       ║"
-    echo -e " ║ 3. Start Compile With Clang                                     ║"
-    echo -e " ║ 4. Copy Image.gz-dtb to Flashable Dir                           ║"
+    echo -e " ║ 1. Export Lavender Old Cam defconfig to Out Dir                 ║"
+    echo -e " ║ 2. Export Lavender New Cam defconfig to Out Dir                 ║"
+    echo -e " ║ 3. Start Compile GCC Only                                       ║"
+    echo -e " ║ 4. Start Compile With Clang                                     ║"
+    echo -e " ║ 5. Copy Image.gz-dtb to Flashable Dir                           ║"
     echo -e " ║ e. Back Main Menu                                               ║"
     echo -e " ╚═════════════════════════════════════════════════════════════════╝"
     echo -ne "\n Enter your choice 1-4, or press 'e' for back to Main Menu : "
 
     read menu
 
-    # Export deconfig
+    # Export old cam deconfig
     if [[ "$menu" == "1" ]]; then
-        make O=out $CONFIG
-        echo -e "\n (i) Success export $CONFIG defonfig to Out Dir"
+        make O=out $CONFIG_OLDCAM
+        echo -e "\n (i) Success export $CONFIG_OLDCAM defonfig to Out Dir"
+        echo -e ""
+    fi
+
+    # Export new cam deconfig
+    if [[ "$menu" == "2" ]]; then
+        make O=out $CONFIG_NEWCAM
+        echo -e "\n (i) Success export $CONFIG_NEWCAM defonfig to Out Dir"
         echo -e ""
     fi
 
     # build GCC only
-    if [[ "$menu" == "2" ]]; then
+    if [[ "$menu" == "3" ]]; then
         start () {
                 time make -j"${CORE}" \
                 O=out \
@@ -69,7 +78,7 @@ while true; do
      fi
 
     # Build With Clang
-    if [[ "$menu" == "3" ]]; then
+    if [[ "$menu" == "4" ]]; then
 
         # Setup Clang
         CLANG_DIR="$PWD/../Toolchain/clang-r377782c"
@@ -100,7 +109,7 @@ while true; do
     fi
 
     # Move kernel to flashable dir
-    if [[ "$menu" == "4" ]]; then
+    if [[ "$menu" == "5" ]]; then
         cd $AK3_DIR
         cp $KERNEL_OUT $AK3_DIR/Image.gz-dtb
 

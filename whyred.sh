@@ -11,7 +11,8 @@ KERNEL_DIR=$PWD
 KERNEL_OUT=$KERNEL_DIR/out/arch/arm64/boot/Image.gz
 KERN_DTB=$KERNEL_DIR/out/arch/arm64/boot/dts/qcom/sdm636-mtp_e7s.dtb
 AK3_DIR=$KERNEL_DIR/../AnyKernel3
-CONFIG=mystic-whyred_defconfig
+CONFIG_OLDCAM=mystic-whyred_defconfig
+CONFIG_NEWCAM=mystic-whyred-newcam_defconfig
 CORE="$(grep -c '^processor' /proc/cpuinfo)"
 
 # Setup GCC Toolchain
@@ -30,27 +31,35 @@ while true; do
 	echo -e ""
     echo -e " Menu                                                               "
     echo -e " ╔═════════════════════════════════════════════════════════════════╗"
-    echo -e " ║ 1. Export Whyred defconfig to Out Dir                           ║"
-    echo -e " ║ 2. Start Compile GCC Only                                       ║"
-    echo -e " ║ 3. Start Compile With Clang                                     ║"
-    echo -e " ║ 4. Copy Image.gz to Flashable Dir                               ║"
-    echo -e " ║ 5. Copy dtb-uc to Flashable Dir                                 ║"
-    echo -e " ║ 6. Copy dtb-oc to Flashable Dir                                 ║"    
+    echo -e " ║ 1. Export Whyred Old Cam defconfig to Out Dir                   ║"
+    echo -e " ║ 2. Export Whyred New Cam defconfig to Out Dir                   ║"
+    echo -e " ║ 3. Start Compile GCC Only                                       ║"
+    echo -e " ║ 4. Start Compile With Clang                                     ║"
+    echo -e " ║ 5. Copy Image.gz to Flashable Dir                               ║"
+    echo -e " ║ 6. Copy dtb-uc to Flashable Dir                                 ║"
+    echo -e " ║ 7. Copy dtb-oc to Flashable Dir                                 ║"    
     echo -e " ║ e. Back Main Menu                                               ║"
     echo -e " ╚═════════════════════════════════════════════════════════════════╝"
     echo -ne "\n Enter your choice 1-4, or press 'e' for back to Main Menu : "
 
     read menu
 
-    # Export deconfig
+    # Export old cam deconfig
     if [[ "$menu" == "1" ]]; then
-        make O=out $CONFIG
-        echo -e "\n (i) Success export $CONFIG defonfig to Out Dir"
+        make O=out $CONFIG_OLDCAM
+        echo -e "\n (i) Success export $CONFIG_OLDCAM defonfig to Out Dir"
+        echo -e ""
+    fi
+
+    # Export new cam deconfig
+    if [[ "$menu" == "2" ]]; then
+        make O=out $CONFIG_NEWCAM
+        echo -e "\n (i) Success export $CONFIG_NEWCAM defonfig to Out Dir"
         echo -e ""
     fi
 
     # build GCC only
-    if [[ "$menu" == "2" ]]; then
+    if [[ "$menu" == "3" ]]; then
         start () {
                 time make -j"${CORE}" \
                 O=out \
@@ -72,7 +81,7 @@ while true; do
      fi
 
     # Build With Clang
-    if [[ "$menu" == "3" ]]; then
+    if [[ "$menu" == "4" ]]; then
 
         # Setup Clang
         CLANG_DIR="$PWD/../Toolchain/clang-r377782c"
@@ -103,7 +112,7 @@ while true; do
     fi
 
     # Move kernel to flashable dir
-    if [[ "$menu" == "4" ]]; then
+    if [[ "$menu" == "5" ]]; then
         cd $AK3_DIR
         cp $KERNEL_OUT $AK3_DIR/kernel/Image.gz
 
@@ -111,7 +120,7 @@ while true; do
     fi
 
     # Copy dtb uc to flashable dir
-    if [ "$choice" == "5" ]; then
+    if [ "$choice" == "6" ]; then
         cd $AK3_DIR
         cp $KERN_DTB $AK3_DIR/dtbs/fucek.dtb-uc
         cd ..
@@ -120,7 +129,7 @@ while true; do
     fi
 
     # Copy dtb oc to flashable dir
-    if [ "$choice" == "6" ]; then
+    if [ "$choice" == "7" ]; then
         cd $AK3_DIR
         cp $KERN_DTB $AK3_DIR/dtbs/fucek.dtb-oc
         cd ..
