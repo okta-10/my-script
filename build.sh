@@ -51,9 +51,10 @@ while true; do
     echo -e " ╔═════════════════════════════════════════════════════════════════╗"
     echo -e " ║ 1. Build For Whyred (Xiaomeme - Redmi Note 5 Pro)               ║"
     echo -e " ║ 2. Build For Tulip (Xiaomeme - Redmi Note 6 Pro)                ║"
-    echo -e " ║ 3. Build For Wayne (Xiaomeme - Mi 6X)                           ║"
-    echo -e " ║ 4. Build For Jasmine (Xiaomeme - Mi A2)                         ║"
-    echo -e " ║ 5. Clean Out Dir                                                ║"
+    echo -e " ║ 3. Build For Lavender (Xiaomeme - Redmi Note 7)                 ║"
+    echo -e " ║ 4. Build For Wayne (Xiaomeme - Mi 6X)                           ║"
+    echo -e " ║ 5. Build For Jasmine (Xiaomeme - Mi A2)                         ║"
+    echo -e " ║ 6. Clean Out Dir                                                ║"
     echo -e " ║ e. Exit                                                         ║"
     echo -e " ╚═════════════════════════════════════════════════════════════════╝"
     echo -ne "\n Enter your choice 1-5, or press 'e' For Exit : "
@@ -70,18 +71,23 @@ while true; do
         ./tulip.sh
     fi
 
-    # Wayne
+    # Tulip
     if [ "$menu" == "3" ]; then
+        ./lavender.sh
+    fi
+
+    # Wayne
+    if [ "$menu" == "4" ]; then
         ./wayne.sh
     fi
 
     # Jasmine
-    if [ "$menu" == "4" ]; then
+    if [ "$menu" == "5" ]; then
         ./jasmine.sh
     fi
 
     # Clean Out Dir
-    if [ "$menu" == "5" ]; then
+    if [ "$menu" == "6" ]; then
         make O=out clean
         make mrproper
         rm -rf out/*
