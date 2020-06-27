@@ -90,7 +90,7 @@ while true; do
     if [ "$menu" == "6" ]; then
         make O=out clean
         make mrproper
-        rm -rf out/*
+        rm -rf out
 
         echo -e "\n (i) Kernel source cleaned up."
     fi
