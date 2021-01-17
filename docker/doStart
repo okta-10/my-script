@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+# Copyright (C) 2020-2021 Oktapra Amtono
+# Docker Kernel Build Script
+
+export CHANNEL_ID="-1001448019349"
+
+BRANCH="$(git rev-parse --abbrev-ref HEAD)"
+
+# Cloning some resource
+git clone --depth=1 https://github.com/fabianonline/telegram.sh Telegram
+git clone --depth=1 https://github.com/okta-10/mystic-clang.git mystic-clang
+git clone --depth=1 https://github.com/okta-10/AnyKernel3.git -b whyred-nondtb ak3-whyred
+git clone --depth=1 https://github.com/okta-10/AnyKernel3.git -b tulip-nondtb ak3-tulip
+git clone --depth=1 https://github.com/okta-10/AnyKernel3.git -b lavender ak3-lavender
+git clone --depth=1 https://github.com/okta-10/AnyKernel3.git -b a26x ak3-a26x
+
+# Telegram
+TELEGRAM=Telegram/telegram
+sendInfo() {
+  "${TELEGRAM}" -c "${CHANNEL_ID}" -H \
+      "$(
+          for POST in "${@}"; do
+              echo "${POST}"
+          done
+      )"
+}
+
+sendInfo "<b>Start Building : </b><code>Mystic Kernel</code>" \
+        "<b>Source Branch : </b><code>$BRANCH</code>"
