@@ -146,7 +146,7 @@ fi
 # Make zip
 cd $AK3_DIR
 cp $KERNEL_IMG $AK3_DIR/
-zip -r9 Mystic-$CODENAME-EAS_Stable_$CAM_BLOB-$ZIP_DATE.zip *
+zip -r9 Mystic-$CODENAME-EAS_$CAM_BLOB-$ZIP_DATE.zip *
 cd $KERNEL_DIR
 
 sendKernel
