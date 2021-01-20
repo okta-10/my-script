@@ -3,7 +3,7 @@
 # Docker Kernel Build Script
 
 # Telegram ID
-export CHANNEL_ID="-1001448019349"
+export CHANNEL_ID="-1001266259967"
 
 # Setup Environtment
 export TZ="Asia/Jakarta"

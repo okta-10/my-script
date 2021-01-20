@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+# Copyright (C) 2020-2021 Oktapra Amtono
+# Docker Kernel Build Script
+
+export CHANNEL_ID="-1001266259967"
+
+BRANCH="$(git rev-parse --abbrev-ref HEAD)"
+
+KERNEL_DIR=$PWD
+CLANG_DIR="$KERNEL_DIR/mystic-clang"
+export PATH="/mystic-clang/bin:$PATH"
+export KBUILD_COMPILER_STRING="$(${CLANG_DIR}/bin/clang --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')"
+
+# Telegram
+TELEGRAM=Telegram/telegram
+sendInfo() {
+  "${TELEGRAM}" -c "${CHANNEL_ID}" -H \
+      "$(
+          for POST in "${@}"; do
+              echo "${POST}"
+          done
+      )"
+}
+
+sendInfo "<b>Successfully Build : </b><code>Mystic Kernel</code>" \
+        "<b>Using Toolchain : </b><code>$KBUILD_COMPILER_STRING</code>" \
+        "<b>Changelog from Last Commit</b> : " \
+        "<code>$(git log --pretty=format:'"%h : %s"' -5)</code>"
