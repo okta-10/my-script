@@ -2,13 +2,9 @@
 # Copyright (C) 2020-2021 Oktapra Amtono
 # Docker Kernel Build Script
 
-export CHANNEL_ID="-1001448019349"
-
 BRANCH="$(git rev-parse --abbrev-ref HEAD)"
 
-KERNEL_DIR=$PWD
-CLANG_DIR="$KERNEL_DIR/mystic-clang"
-export PATH="/mystic-clang/bin:$PATH"
+CLANG_DIR="clang"
 export KBUILD_COMPILER_STRING="$(${CLANG_DIR}/bin/clang --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')"
 
 # Telegram
