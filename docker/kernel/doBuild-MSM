@@ -36,60 +36,20 @@ sendKernel() {
 }
 
 # Setup Defconfig
-# if whyred
-if [[ "$@" =~ "whyredoldcam" ]]; then
-  export DEVICE="Redmi Note 5 Pro / AI"
-  export CODENAME="Whyred"
-  AK3_DIR=$KERNEL_DIR/ak3-whyred/
-  export KERNEL_DEFCONFIG=mystic-whyred-oldcam_defconfig
-  export CAM_BLOB="OldCam"
-elif [[ "$@" =~ "whyrednewcam" ]]; then
-  export DEVICE="Redmi Note 5 Pro / AI"
-  export CODENAME="Whyred"
-  AK3_DIR=$KERNEL_DIR/ak3-whyred/
-  export KERNEL_DEFCONFIG=mystic-whyred-newcam_defconfig
-  export CAM_BLOB="NewCam"
 # if tulip
-elif [[ "$@" =~ "tulipoldcam" ]]; then
+if [[ "$@" =~ "tulipoldcam" ]]; then
+  git apply msm.patch
   export DEVICE="Redmi Note 6 Pro"
   export CODENAME="Tulip"
   AK3_DIR=$KERNEL_DIR/ak3-tulip/
   export KERNEL_DEFCONFIG=mystic-tulip-oldcam_defconfig
-  export CAM_BLOB="OldCam"
+  export CAM_BLOB="OldCam_MSM-Thermal"
 elif [[ "$@" =~ "tulipnewcam" ]]; then
   export DEVICE="Redmi Note 6 Pro"
   export CODENAME="Tulip"
   AK3_DIR=$KERNEL_DIR/ak3-tulip/
   export KERNEL_DEFCONFIG=mystic-tulip-newcam_defconfig
-  export CAM_BLOB="NewCam"
-# if lavender
-elif [[ "$@" =~ "lavenderoldcam" ]]; then
-  export DEVICE="Redmi Note 7"
-  export CODENAME="Lavender"
-  AK3_DIR=$KERNEL_DIR/ak3-lavender/
-  export KERNEL_DEFCONFIG=mystic-lavender-oldcam_defconfig
-  export CAM_BLOB="OldCam"
-elif [[ "$@" =~ "lavendernewcam" ]]; then
-  export DEVICE="Redmi Note 7"
-  export CODENAME="Lavender"
-  AK3_DIR=$KERNEL_DIR/ak3-lavender/
-  export KERNEL_DEFCONFIG=mystic-lavender-newcam_defconfig
-  export CAM_BLOB="NewCam"
-# if a26x
-elif [[ "$@" =~ "a26xoldcam" ]]; then
-  export DEVICE="Mi A2/6X"
-  export CODENAME="A26X"
-  export REAL_CODENAME="Jasmine/Wayne"
-  AK3_DIR=$KERNEL_DIR/ak3-a26x/
-  export KERNEL_DEFCONFIG=mystic-a26x-oldcam_defconfig
-  export CAM_BLOB="OldCam"
-elif [[ "$@" =~ "a26xnewcam" ]]; then
-  export DEVICE="Mi A2/6X"
-  export CODENAME="A26X"
-  export REAL_CODENAME="Jasmine/Wayne"
-  AK3_DIR=$KERNEL_DIR/ak3-a26x/
-  export KERNEL_DEFCONFIG=mystic-a26x-newcam_defconfig
-  export CAM_BLOB="NewCam"
+  export CAM_BLOB="NewCam_MSM-Thermal"
 fi
 
 # Start Compile
