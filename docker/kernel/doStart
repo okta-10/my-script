@@ -23,5 +23,7 @@ sendInfo() {
       )"
 }
 
-sendInfo "<b>Start Building : </b><code>Mystic Kernel</code>" \
-        "<b>Source Branch : </b><code>$BRANCH</code>"
+sendInfo	"<b>======================================</b>" \
+        	"<b> Start Building : </b><code>Mystic Kernel</code>" \
+        	"<b> Source Branch : </b><code>$BRANCH</code>" \
+        	"<b>======================================</b>" \

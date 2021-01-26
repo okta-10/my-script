@@ -3,18 +3,23 @@
 # Docker Kernel Build Script
 
 # Setup Environtment
-export TZ="Asia/Jakarta"
-BRANCH="$(git rev-parse --abbrev-ref HEAD)"
+
 KERNEL_DIR=$PWD
-ZIP_DATE=$(TZ=Asia/Jakarta date +'%H-%M-%S')
 KERNEL_IMG=$KERNEL_DIR/out/arch/arm64/boot/Image.gz-dtb
+export TZ="Asia/Jakarta"
+ZIP_DATE=$(TZ=Asia/Jakarta date +'%d%m%Y')
+BRANCH="$(git rev-parse --abbrev-ref HEAD)"
 
 # Kernel & Clang Setup
 CLANG_DIR="/drone/src/clang"
 export PATH="/drone/src/clang/bin:$PATH"
-export KBUILD_COMPILER_STRING="$(${CLANG_DIR}/bin/clang --version | head -n 1 | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')"
+KBUILD_COMPILER_STRING="$(${CLANG_DIR}/bin/clang --version | head -n 1 | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')"
+
+export ZIP_DATE
+export BRANCH
 export ARCH=arm64
 export SUBARCH=arm64
+export KBUILD_COMPILER_STRING
 export KBUILD_BUILD_USER="okta_10"
 export KBUILD_BUILD_HOST="DroneCI"
 
@@ -32,7 +37,7 @@ sendInfo() {
 sendKernel() {
   "${TELEGRAM}" -f "$(echo "$AK3_DIR"/*.zip)" \
   -c "${CHANNEL_ID}" -H \
-      "$(echo "$DEVICE - $CODENAME ($CAM_BLOB)")"
+      "$DEVICE - $CODENAME ($CAM_BLOB)"
 }
 
 # Setup Defconfig
@@ -78,18 +83,65 @@ elif [[ "$@" =~ "lavendernewcam" ]]; then
 # if a26x
 elif [[ "$@" =~ "a26xoldcam" ]]; then
   export DEVICE="Mi A2/6X"
-  export CODENAME="A26X"
-  export REAL_CODENAME="Jasmine/Wayne"
+  export CODENAME="A26X" #Jasmine/Wayne
   AK3_DIR=$KERNEL_DIR/ak3-a26x/
   export KERNEL_DEFCONFIG=mystic-a26x-oldcam_defconfig
   export CAM_BLOB="OldCam"
 elif [[ "$@" =~ "a26xnewcam" ]]; then
   export DEVICE="Mi A2/6X"
-  export CODENAME="A26X"
-  export REAL_CODENAME="Jasmine/Wayne"
+  export CODENAME="A26X" #Jasmine/Wayne
   AK3_DIR=$KERNEL_DIR/ak3-a26x/
   export KERNEL_DEFCONFIG=mystic-a26x-newcam_defconfig
   export CAM_BLOB="NewCam"
+elif [[ "$@" =~ "a26xtencam" ]]; then
+  export DEVICE="Mi A2/6X"
+  export CODENAME="A26X" #Jasmine/Wayne
+  AK3_DIR=$KERNEL_DIR/ak3-a26x/
+  export KERNEL_DEFCONFIG=mystic-a26x-tencam_defconfig
+  export CAM_BLOB="TenCam"
+# if whyred OverClock
+elif [[ "$@" =~ "ocwhyredold" ]]; then
+  export DEVICE="Redmi Note 5 Pro / AI"
+  export CODENAME="Whyred"
+  export LOCALVERSION=-OC
+  AK3_DIR=$KERNEL_DIR/ak3-whyred/
+  export KERNEL_DEFCONFIG=mystic-whyred-oldcam_defconfig
+  export CAM_BLOB="OldCam-OC"
+elif [[ "$@" =~ "ocwhyrednew" ]]; then
+  export DEVICE="Redmi Note 5 Pro / AI"
+  export CODENAME="Whyred"
+  export LOCALVERSION=-OC
+  AK3_DIR=$KERNEL_DIR/ak3-whyred/
+  export KERNEL_DEFCONFIG=mystic-whyred-newcam_defconfig
+  export CAM_BLOB="NewCam-OC"
+# if tulip OverClock
+elif [[ "$@" =~ "octulipold" ]]; then
+  export DEVICE="Redmi Note 6 Pro"
+  export CODENAME="Tulip"
+  export LOCALVERSION=-OC
+  AK3_DIR=$KERNEL_DIR/ak3-tulip/
+  export KERNEL_DEFCONFIG=mystic-tulip-oldcam_defconfig
+  export CAM_BLOB="OldCam-OC"
+elif [[ "$@" =~ "octulipnew" ]]; then
+  export DEVICE="Redmi Note 6 Pro"
+  export CODENAME="Tulip"
+  export LOCALVERSION=-OC
+  AK3_DIR=$KERNEL_DIR/ak3-tulip/
+  export KERNEL_DEFCONFIG=mystic-tulip-newcam_defconfig
+  export CAM_BLOB="NewCam-OC"
+# if tulip MSM Thermal
+elif [[ "$@" =~ "msmtulipold" ]]; then
+  export DEVICE="Redmi Note 6 Pro"
+  export CODENAME="Tulip"
+  AK3_DIR=$KERNEL_DIR/ak3-tulip/
+  export KERNEL_DEFCONFIG=mystic-tulip-oldcam_defconfig
+  export CAM_BLOB="OldCam_MSM-Thermal"
+elif [[ "$@" =~ "msmtulipnew" ]]; then
+  export DEVICE="Redmi Note 6 Pro"
+  export CODENAME="Tulip"
+  AK3_DIR=$KERNEL_DIR/ak3-tulip/
+  export KERNEL_DEFCONFIG=mystic-tulip-newcam_defconfig
+  export CAM_BLOB="NewCam_MSM-Thermal"
 fi
 
 # Start Compile
@@ -112,13 +164,13 @@ if ! [ $? -eq 0 ]; then
 fi
 
 # Make zip
-cd $AK3_DIR
-cp $KERNEL_IMG $AK3_DIR/
-zip -r9 Mystic-$CODENAME-EAS_x4.5_$CAM_BLOB.zip *
-cd $KERNEL_DIR
+cp "$KERNEL_IMG" "$AK3_DIR"/
+cd "$AK3_DIR" || exit
+zip -r9 Mystic-"$CODENAME"-EAS_"$CAM_BLOB".zip ./*
+cd "$KERNEL_DIR" || exit
 
 sendKernel
 
 rm -rf out/arch/arm64/boot/
 rm -rf out/.version
-rm -rf $AK3_DIR/*.zip
+rm -rf "$AK3_DIR"/*.zip

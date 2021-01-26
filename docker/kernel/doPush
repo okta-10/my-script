@@ -3,9 +3,13 @@
 # Docker Kernel Build Script
 
 BRANCH="$(git rev-parse --abbrev-ref HEAD)"
+COMMIT=$(git log --pretty=format:'"%h : %s"' -5)
 
 CLANG_DIR="clang"
-export KBUILD_COMPILER_STRING="$(${CLANG_DIR}/bin/clang --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')"
+KBUILD_COMPILER_STRING="$(${CLANG_DIR}/bin/clang --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')"
+
+export BRANCH
+export KBUILD_COMPILER_STRING
 
 # Telegram
 TELEGRAM=Telegram/telegram
@@ -18,7 +22,9 @@ sendInfo() {
       )"
 }
 
-sendInfo "<b>Successfully Build : </b><code>Mystic Kernel</code>" \
-        "<b>Using Toolchain : </b><code>$KBUILD_COMPILER_STRING</code>" \
-        "<b>Changelog from Last Commit</b> : " \
-        "<code>$(git log --pretty=format:'"%h : %s"' -5)</code>"
+sendInfo	"<b>======================================</b>" \
+        	"<b> Successfully Build : </b><code>Mystic Kernel</code>" \
+        	"<b> Using Toolchain : </b><code>$KBUILD_COMPILER_STRING</code>" \
+        	"<b> Changelog from Last Commit</b> : " \
+        	"<b> <code>$COMMIT</code> </b>" \
+        	"<b>======================================</b>"
