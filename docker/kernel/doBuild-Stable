@@ -3,7 +3,6 @@
 # Docker Kernel Build Script
 
 # Setup Environtment
-
 KERNEL_DIR=$PWD
 KERNEL_IMG=$KERNEL_DIR/out/arch/arm64/boot/Image.gz-dtb
 export TZ="Asia/Jakarta"
@@ -37,77 +36,77 @@ sendInfo() {
 sendKernel() {
   "${TELEGRAM}" -f "$(echo "$AK3_DIR"/*.zip)" \
   -c "${CHANNEL_ID}" -H \
-      "$DEVICE - $CODENAME ($CAM_BLOB)"
+      "<code>$DEVICE - $CODENAME ($CAM_BLOB)</code>"
 }
 
 # Setup Defconfig
 # if whyred
-if [[ "$@" =~ "whyredoldcam" ]]; then
+if [[ "$*" =~ "whyredoldcam" ]]; then
   export DEVICE="Redmi Note 5 Pro / AI"
   export CODENAME="Whyred"
   AK3_DIR=$KERNEL_DIR/ak3-whyred/
   export KERNEL_DEFCONFIG=mystic-whyred-oldcam_defconfig
   export CAM_BLOB="OldCam"
-elif [[ "$@" =~ "whyrednewcam" ]]; then
+elif [[ "$*" =~ "whyrednewcam" ]]; then
   export DEVICE="Redmi Note 5 Pro / AI"
   export CODENAME="Whyred"
   AK3_DIR=$KERNEL_DIR/ak3-whyred/
   export KERNEL_DEFCONFIG=mystic-whyred-newcam_defconfig
   export CAM_BLOB="NewCam"
 # if tulip
-elif [[ "$@" =~ "tulipoldcam" ]]; then
+elif [[ "$*" =~ "tulipoldcam" ]]; then
   export DEVICE="Redmi Note 6 Pro"
   export CODENAME="Tulip"
   AK3_DIR=$KERNEL_DIR/ak3-tulip/
   export KERNEL_DEFCONFIG=mystic-tulip-oldcam_defconfig
   export CAM_BLOB="OldCam"
-elif [[ "$@" =~ "tulipnewcam" ]]; then
+elif [[ "$*" =~ "tulipnewcam" ]]; then
   export DEVICE="Redmi Note 6 Pro"
   export CODENAME="Tulip"
   AK3_DIR=$KERNEL_DIR/ak3-tulip/
   export KERNEL_DEFCONFIG=mystic-tulip-newcam_defconfig
   export CAM_BLOB="NewCam"
 # if lavender
-elif [[ "$@" =~ "lavenderoldcam" ]]; then
+elif [[ "$*" =~ "lavenderoldcam" ]]; then
   export DEVICE="Redmi Note 7"
   export CODENAME="Lavender"
   AK3_DIR=$KERNEL_DIR/ak3-lavender/
   export KERNEL_DEFCONFIG=mystic-lavender-oldcam_defconfig
   export CAM_BLOB="OldCam"
-elif [[ "$@" =~ "lavendernewcam" ]]; then
+elif [[ "$*" =~ "lavendernewcam" ]]; then
   export DEVICE="Redmi Note 7"
   export CODENAME="Lavender"
   AK3_DIR=$KERNEL_DIR/ak3-lavender/
   export KERNEL_DEFCONFIG=mystic-lavender-newcam_defconfig
   export CAM_BLOB="NewCam"
 # if a26x
-elif [[ "$@" =~ "a26xoldcam" ]]; then
+elif [[ "$*" =~ "a26xoldcam" ]]; then
   export DEVICE="Mi A2/6X"
   export CODENAME="A26X" #Jasmine/Wayne
   AK3_DIR=$KERNEL_DIR/ak3-a26x/
   export KERNEL_DEFCONFIG=mystic-a26x-oldcam_defconfig
   export CAM_BLOB="OldCam"
-elif [[ "$@" =~ "a26xnewcam" ]]; then
+elif [[ "$*" =~ "a26xnewcam" ]]; then
   export DEVICE="Mi A2/6X"
   export CODENAME="A26X" #Jasmine/Wayne
   AK3_DIR=$KERNEL_DIR/ak3-a26x/
   export KERNEL_DEFCONFIG=mystic-a26x-newcam_defconfig
   export CAM_BLOB="NewCam"
-elif [[ "$@" =~ "a26xtencam" ]]; then
+elif [[ "$*" =~ "a26xtencam" ]]; then
   export DEVICE="Mi A2/6X"
   export CODENAME="A26X" #Jasmine/Wayne
   AK3_DIR=$KERNEL_DIR/ak3-a26x/
   export KERNEL_DEFCONFIG=mystic-a26x-tencam_defconfig
   export CAM_BLOB="TenCam"
 # if whyred OverClock
-elif [[ "$@" =~ "ocwhyredold" ]]; then
+elif [[ "$*" =~ "ocwhyredold" ]]; then
   export DEVICE="Redmi Note 5 Pro / AI"
   export CODENAME="Whyred"
   export LOCALVERSION=-OC
   AK3_DIR=$KERNEL_DIR/ak3-whyred/
   export KERNEL_DEFCONFIG=mystic-whyred-oldcam_defconfig
   export CAM_BLOB="OldCam-OC"
-elif [[ "$@" =~ "ocwhyrednew" ]]; then
+elif [[ "$*" =~ "ocwhyrednew" ]]; then
   export DEVICE="Redmi Note 5 Pro / AI"
   export CODENAME="Whyred"
   export LOCALVERSION=-OC
@@ -115,14 +114,14 @@ elif [[ "$@" =~ "ocwhyrednew" ]]; then
   export KERNEL_DEFCONFIG=mystic-whyred-newcam_defconfig
   export CAM_BLOB="NewCam-OC"
 # if tulip OverClock
-elif [[ "$@" =~ "octulipold" ]]; then
+elif [[ "$*" =~ "octulipold" ]]; then
   export DEVICE="Redmi Note 6 Pro"
   export CODENAME="Tulip"
   export LOCALVERSION=-OC
   AK3_DIR=$KERNEL_DIR/ak3-tulip/
   export KERNEL_DEFCONFIG=mystic-tulip-oldcam_defconfig
   export CAM_BLOB="OldCam-OC"
-elif [[ "$@" =~ "octulipnew" ]]; then
+elif [[ "$*" =~ "octulipnew" ]]; then
   export DEVICE="Redmi Note 6 Pro"
   export CODENAME="Tulip"
   export LOCALVERSION=-OC
@@ -130,13 +129,13 @@ elif [[ "$@" =~ "octulipnew" ]]; then
   export KERNEL_DEFCONFIG=mystic-tulip-newcam_defconfig
   export CAM_BLOB="NewCam-OC"
 # if tulip MSM Thermal
-elif [[ "$@" =~ "msmtulipold" ]]; then
+elif [[ "$*" =~ "msmtulipold" ]]; then
   export DEVICE="Redmi Note 6 Pro"
   export CODENAME="Tulip"
   AK3_DIR=$KERNEL_DIR/ak3-tulip/
   export KERNEL_DEFCONFIG=mystic-tulip-oldcam_defconfig
   export CAM_BLOB="OldCam_MSM-Thermal"
-elif [[ "$@" =~ "msmtulipnew" ]]; then
+elif [[ "$*" =~ "msmtulipnew" ]]; then
   export DEVICE="Redmi Note 6 Pro"
   export CODENAME="Tulip"
   AK3_DIR=$KERNEL_DIR/ak3-tulip/
@@ -158,7 +157,7 @@ make -C "$(pwd)" O=out \
         CROSS_COMPILE_ARM32=arm-linux-gnueabi-
 
 # If build error
-if ! [ $? -eq 0 ]; then
+if ! [ -a "$KERNEL_IMG" ]; then
   sendInfo "<b>Build Kernel for <code>$DEVICE</code> <code>$CAM_BLOB</code> failed, please fix...!</b>"
   exit 1
 fi
