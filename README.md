@@ -1,7 +1,14 @@
 # Scripts
+
 Just Noob Script, XD
+##
 
-For simplify compile kernel in local
+## To simplify compile kernel in local and CI
 
-Put script in your local Kranul Sauce
-Run ./build.sh using Terminal
+### For CI, see in "docker" folder, Compatible with DroneCI and CircleCI
+``` *Must be edit path Toolchain if using CircleCi ```
+##
+
+### For local, see in "build-local" folder and put a script in your Kernel Source
+``` Run ./build.sh using Terminal```
+##
