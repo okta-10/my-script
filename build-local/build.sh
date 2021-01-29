@@ -1,29 +1,16 @@
 #!/usr/bin/env bash
+# Copyright (C) 2020-2021 Oktapra Amtono
+# Build Script
 
 # Colors
-end="\033[0m"
-black="\033[0;30m"
-blackb="\033[1;30m"
-white="\033[0;37m"
-whiteb="\033[1;37m"
-red="\033[0;31m"
-redb="\033[1;31m"
-green="\033[0;32m"
-greenb="\033[1;32m"
-yellow="\033[0;33m"
-yellowb="\033[1;33m"
-blue="\033[0;34m"
-blueb="\033[1;34m"
-purple="\033[0;35m"
-purpleb="\033[1;35m"
-lightblue="\033[0;36m"
-lightblueb="\033[1;36m"
+red="\033[1;31m"
+yellow="\033[1;33m"
 
 
 # Main script
 while true; do
     # Logo
-    echo -e "$redb"
+    echo -e "$red"
     echo -e " ╔═══════════════════════════════════════════════════════════════════════════════════════════════════════╗";
     echo -e " ║ ╔═══════════════════════════════════════════════════════════════════════════════════════════════════╗ ║";
     echo -e " ║ ║ ██████          ██████ ████████  ████████ ██████████████ ██████████████ ██████████ ██████████████ ║ ║";
@@ -46,20 +33,19 @@ while true; do
     echo -e " ║ ╚═══════════════════════════════════════════════════════════════════════════════════════════════════╝ ║";
     echo -e " ╚═══════════════════════════════════════════════════════════════════════════════════════════════════════╝";
     echo -e ""
-    echo -e "$yellowb"
+    echo -e "$yellow"
     echo -e " Menu                                                               "
     echo -e " ╔═════════════════════════════════════════════════════════════════╗"
     echo -e " ║ 1. Build For Redmi Note 5 Pro/AI (whyred)                       ║"
     echo -e " ║ 2. Build For Redmi Note 6 Pro (tulip)                           ║"
     echo -e " ║ 3. Build For Redmi Note 7 (lavender)                            ║"
-    echo -e " ║ 4. Build For Mi 6X (wayne)                                      ║"
-    echo -e " ║ 5. Build For Mi A2 (jasmine)                                    ║"
-    echo -e " ║ 6. Clean Out Dir                                                ║"
+    echo -e " ║ 4. Build For Mi A2/6X (jasmine/wayne)                           ║"
+    echo -e " ║ 5. Clean Out Dir                                                ║"
     echo -e " ║ e. Exit                                                         ║"
     echo -e " ╚═════════════════════════════════════════════════════════════════╝"
     echo -ne "\n Enter your choice 1-5, or press 'e' For Exit : "
 
-    read menu
+    read -r menu
 
     # Whyred
     if [ "$menu" == "1" ]; then
@@ -76,14 +62,9 @@ while true; do
         ./lavender.sh
     fi
 
-    # Wayne
+    # A26X (Jasmine/Wayne)
     if [ "$menu" == "4" ]; then
-        ./wayne.sh
-    fi
-
-    # Jasmine
-    if [ "$menu" == "5" ]; then
-        ./jasmine.sh
+        ./a26x.sh
     fi
 
     # Clean Out Dir
