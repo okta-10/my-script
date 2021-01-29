@@ -1,5 +1,7 @@
 # Scripts
 
+[![Code Quality](https://app.codacy.com/project/badge/Grade/3fdd6e7813cf42838729342a4499758e)](https://www.codacy.com/gh/okta-10/scripts/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=okta-10/scripts&amp;utm_campaign=Badge_Grade)
+
 Just Noob Script, XD
 ##
 
