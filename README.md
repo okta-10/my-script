@@ -7,10 +7,17 @@ Just Noob Script, XD
 
 ## To simplify compile kernel in local and CI
 
-### For CI, see in "docker" folder, Compatible with DroneCI and CircleCI
-``` *Must be edit path Toolchain if using CircleCi ```
+### For CI, see in "build-ci" folder
+```
+Compatible with DroneCI and CircleCI
+I only use those two Cloud CI
+```
 ##
 
-### For local, see in "build-local" folder and put a script in your Kernel Source
-``` Run ./build.sh using Terminal```
+### For local, see in "build-local" folder
+``` 
+Just put a script in your Kernel Source.
+Then run using Terminal with the command
+"./build.sh" or "bash build.sh" without quotes.
+```
 ##
