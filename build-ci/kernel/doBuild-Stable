@@ -10,9 +10,9 @@ ZIP_DATE=$(TZ=Asia/Jakarta date +'%d%m%Y')
 BRANCH="$(git rev-parse --abbrev-ref HEAD)"
 
 # Kernel & Clang Setup
-CLANG_DIR="/drone/src/clang"
-export PATH="/drone/src/clang/bin:$PATH"
-KBUILD_COMPILER_STRING="$(${CLANG_DIR}/bin/clang --version | head -n 1 | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')"
+CLANG_DIR="$KERNEL_DIR/clang"
+export PATH="$KERNEL_DIR/clang/bin:$PATH"
+KBUILD_COMPILER_STRING="$("$CLANG_DIR"/bin/clang --version | head -n 1 | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')"
 
 export ZIP_DATE
 export BRANCH
@@ -20,7 +20,7 @@ export ARCH=arm64
 export SUBARCH=arm64
 export KBUILD_COMPILER_STRING
 export KBUILD_BUILD_USER="okta_10"
-export KBUILD_BUILD_HOST="DroneCI"
+export KBUILD_BUILD_HOST="dockerci"
 
 # Telegram
 TELEGRAM=Telegram/telegram
@@ -165,7 +165,7 @@ fi
 # Make zip
 cp "$KERNEL_IMG" "$AK3_DIR"/
 cd "$AK3_DIR" || exit
-zip -r9 Mystic-"$CODENAME"-EAS_beta_"$CAM_BLOB"_"$ZIP_DATE".zip ./*
+zip -r9 Mystic-"$CODENAME"-EAS_"$CAM_BLOB".zip ./*
 cd "$KERNEL_DIR" || exit
 
 sendKernel
