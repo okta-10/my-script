@@ -11,13 +11,14 @@ BRANCH="$(git rev-parse --abbrev-ref HEAD)"
 # Kernel & Clang Setup
 CLANG_DIR="$KERNEL_DIR/clang"
 export PATH="$KERNEL_DIR/clang/bin:$PATH"
-KBUILD_COMPILER_STRING="$("$CLANG_DIR"/bin/clang --version | head -n 1 | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')"
+CCV="$("$CLANG_DIR"/bin/clang --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')"
+LDV="$("$CLANG_DIR"/bin/ld.lld --version | head -n 1)"
 
 export ZIP_DATE
 export BRANCH
 export ARCH=arm64
 export SUBARCH=arm64
-export KBUILD_COMPILER_STRING
+export KBUILD_COMPILER_STRING="$CCV + $LDV"
 export KBUILD_BUILD_USER="okta_10"
 export KBUILD_BUILD_HOST="dockerci"
 

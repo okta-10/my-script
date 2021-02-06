@@ -6,10 +6,11 @@ BRANCH="$(git rev-parse --abbrev-ref HEAD)"
 COMMIT=$(git log --pretty=format:'"%h : %s"' -5)
 
 CLANG_DIR="clang"
-KBUILD_COMPILER_STRING="$(${CLANG_DIR}/bin/clang --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')"
+CCV="$("$CLANG_DIR"/bin/clang --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')"
+LDV="$("$CLANG_DIR"/bin/ld.lld --version | head -n 1)"
 
 export BRANCH
-export KBUILD_COMPILER_STRING
+export KBUILD_COMPILER_STRING="$CCV + $LDV"
 
 # Telegram
 TELEGRAM=Telegram/telegram
