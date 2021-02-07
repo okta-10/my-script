@@ -3,7 +3,7 @@
 # Docker Kernel Build Script
 
 BRANCH="$(git rev-parse --abbrev-ref HEAD)"
-COMMIT=$(git log --pretty=format:'"%h : %s"' -5)
+COMMIT=$(git log --pretty=format:'%s' -1)
 
 CLANG_DIR="clang"
 CCV="$("$CLANG_DIR"/bin/clang --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')"
@@ -24,12 +24,11 @@ sendInfo() {
 }
 
 sendInfo  "<b>======================================</b>" \
-          "<b> Success Building : </b><code>Mystic Kernel</code>" \
+          "<b> Success Building : <code>Mystic Kernel</code> </b>" \
           "<b> Linux Version : <code>$LINUX_VERSION</code> </b>" \
           "<b> Toolchain : <code>$CCV</code> </b>" \
           "<b> Linker : <code>$LDV</code> </b>" \
-          "<b> Changelog from Last Commit</b> : " \
-          "<b> <code>- $COMMIT</code> </b>" \
+          "<b> Last Commit : <code>$COMMIT</code> </b> " \
           "<b>======================================</b>"
 
 sendInfo  "<b> Provide your feedback in the @MysticKernelDiscussion group for this Beta Build 😉</b> "
