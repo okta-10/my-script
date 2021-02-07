@@ -31,3 +31,5 @@ sendInfo  "<b>======================================</b>" \
           "<b> Changelog from Last Commit</b> : " \
           "<b> <code>- $COMMIT</code> </b>" \
           "<b>======================================</b>"
+
+sendInfo  "<b> Provide your feedback in the @MysticKernelDiscussion group for this Beta Build 😉</b> "
