@@ -15,7 +15,7 @@ export BRANCH
 # Telegram
 TELEGRAM=Telegram/telegram
 sendInfo() {
-  "${TELEGRAM}" -c "${CHANNEL_ID}" -H \
+  "${TELEGRAM}" -c "${CHANNEL_ID}" -H -D \
       "$(
           for POST in "${@}"; do
               echo "${POST}"
@@ -28,7 +28,8 @@ sendInfo  "<b>======================================</b>" \
           "<b>Linux Version :</b> <code>$LINUX_VERSION</code>" \
           "<b>Toolchain :</b> <code>$CCV</code>" \
           "<b>Linker :</b> <code>$LDV</code>" \
-          "<b>Last Commit :</b> <code>$COMMIT</code>" \
+          "<b>Last Changelog :</b> <code>$COMMIT</code>" \
+          "<b>Full Changelog :</b> https://github.com/okta-10/mystic-kernel-sdm660/commits/$BRANCH" \
           "<b>======================================</b>" \
           " " \
           "<b>Provide your feedback in the @MysticKernelDiscussion group for this Beta Build 😉</b>"
