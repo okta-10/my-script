@@ -24,11 +24,11 @@ sendInfo() {
 }
 
 sendInfo  "<b>======================================</b>" \
-          "<b> Success Building : <code>Mystic Kernel</code> </b>" \
-          "<b> Linux Version : <code>$LINUX_VERSION</code> </b>" \
-          "<b> Toolchain : <code>$CCV</code> </b>" \
-          "<b> Linker : <code>$LDV</code> </b>" \
-          "<b> Last Commit : <code>$COMMIT</code> </b> " \
-          "<b>======================================</b>"
-
-sendInfo  "<b> Provide your feedback in the @MysticKernelDiscussion group for this Beta Build 😉</b> "
+          "<b>Success Building :</b> <code>Mystic Kernel</code>" \
+          "<b>Linux Version :</b> <code>$LINUX_VERSION</code>" \
+          "<b>Toolchain :</b> <code>$CCV</code>" \
+          "<b>Linker :</b> <code>$LDV</code>" \
+          "<b>Last Commit :</b> <code>$COMMIT</code>" \
+          "<b>======================================</b>" \
+          " " \
+          "<b>Provide your feedback in the @MysticKernelDiscussion group for this Beta Build 😉</b>"

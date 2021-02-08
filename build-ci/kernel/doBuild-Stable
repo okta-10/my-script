@@ -36,7 +36,7 @@ sendInfo() {
 sendKernel() {
   "${TELEGRAM}" -f "$(echo "$AK3_DIR"/*.zip)" \
   -c "${CHANNEL_ID}" -H \
-      "<b>$DEVICE $CODENAME-$CAM_BLOB</b> <code>(MD5-Checksum : $(md5sum "$AK3_DIR"/*.zip | cut -d' ' -f1))</code>"
+      "<b># $DEVICE ($CODENAME-$CAM_BLOB) # MD5-Checksum:</b> <code>$(md5sum "$AK3_DIR"/*.zip | cut -d' ' -f1)</code>"
 }
 
 # Setup Kernel IMG
@@ -136,7 +136,7 @@ make -j"$(nproc --all)" O=out \
 
 # If build error
 if ! [ -a "$KERNEL_IMG" ]; then
-  sendInfo "<b>Build Kernel for <code>$DEVICE</code> <code>$CAM_BLOB</code> failed, please fix...!</b>"
+  sendInfo "<b>Failed building kernel for <code>$DEVICE - $CAM_BLOB</code> Please fix it...!</b>"
   exit 1
 fi
 
