@@ -36,7 +36,7 @@ sendInfo() {
 sendKernel() {
   "${TELEGRAM}" -f "$(echo "$AK3_DIR"/*.zip)" \
   -c "${CHANNEL_ID}" -H \
-      "<code>$DEVICE - $CODENAME ($CAM_BLOB)</code>"
+      "<b>$DEVICE $CODENAME-$CAM_BLOB</b> <code>(MD5-Checksum : $(md5sum "$AK3_DIR"/*.zip | cut -d' ' -f1))</code>"
 }
 
 # Setup Kernel IMG
