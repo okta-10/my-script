@@ -1,0 +1,102 @@
+#!/usr/bin/env bash
+# Copyright (C) 2020-2021 Oktapra Amtono
+# Docker Kernel Build Script
+
+# Cloning some resource
+git clone --depth=1 https://"${TOKED}":x-oauth-basic@github.com/okta-10/mystic_kernel_sdm660-4.19.git -b Mystic-4.19 kernel
+cd kernel || exit
+git clone --depth=1 https://github.com/fabianonline/telegram.sh Telegram
+git clone --depth=1 https://github.com/kdrag0n/proton-clang.git clang
+git clone --depth=1 https://github.com/okta-10/AnyKernel3.git -b whyred-nondtb ak3-whyred
+
+# Setup Environtment
+KERNEL_DIR=$PWD
+KERNEL_IMG=$KERNEL_DIR/out/arch/arm64/boot/Image.gz-dtb
+KERNEL_DEFCONFIG=vendor/mystic-whyred_defconfig
+DEVICE="Whyred"
+CAF="MSM-4.19"
+AK3_DIR=$KERNEL_DIR/ak3-whyred/
+export TZ="Asia/Jakarta"
+ZIP_DATE=$(TZ=Asia/Jakarta date +'%d%m%Y')
+BRANCH="$(git rev-parse --abbrev-ref HEAD)"
+COMMIT=$(git log --pretty=format:'%s' -1)
+
+# Kernel & Clang Setup
+CLANG_DIR="$KERNEL_DIR/clang"
+export PATH="$KERNEL_DIR/clang/bin:$PATH"
+CCV="$("$CLANG_DIR"/bin/clang --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')"
+LDV="$("$CLANG_DIR"/bin/ld.lld --version | head -n 1)"
+
+export ZIP_DATE
+export BRANCH
+export ARCH=arm64
+export SUBARCH=arm64
+export KBUILD_COMPILER_STRING="$CCV + $LDV"
+export KBUILD_BUILD_USER="okta_10"
+export KBUILD_BUILD_HOST="dockerci"
+
+# Telegram
+TELEGRAM=Telegram/telegram
+sendInfo() {
+  "${TELEGRAM}" -c "${CHANNEL_ID}" -H -D \
+      "$(
+          for POST in "${@}"; do
+              echo "${POST}"
+          done
+      )"
+}
+
+sendKernel() {
+  "${TELEGRAM}" -f "$(echo "$AK3_DIR"/*.zip)" \
+  -c "${CHANNEL_ID}" -H \
+      "<b># $DEVICE-$CAF # MD5-Checksum:</b> <code>$(md5sum "$AK3_DIR"/*.zip | cut -d' ' -f1)</code>"
+}
+
+sendInfo  "<b>======================================</b>" \
+          "<b>Start Building :</b> <code>Mystic Kernel</code>" \
+          "<b>Source Branch :</b> <code>$BRANCH</code>" \
+          "<b>======================================</b>"
+
+BUILD_START=$(date +"%s")
+
+# Start Compile
+make O=out $KERNEL_DEFCONFIG
+make -j"$(nproc --all)" O=out \
+        CC=clang \
+        AR=llvm-ar \
+        NM=llvm-nm \
+        OBJCOPY=llvm-objcopy \
+        OBJDUMP=llvm-objdump \
+        STRIP=llvm-strip \
+        CROSS_COMPILE=aarch64-linux-gnu- \
+        CROSS_COMPILE_ARM32=arm-linux-gnueabi-
+
+BUILD_END=$(date +"%s")
+DIFF=$(( BUILD_END - BUILD_START ))
+
+# If build error
+if ! [ -a "$KERNEL_IMG" ]; then
+  sendInfo "<b>Failed building kernel for <code>$DEVICE-$CAF</code> Please fix it...!</b>"
+  exit 1
+fi
+
+LINUX_VERSION=$(cat < out/.config | grep Linux/arm64 | cut -d " " -f3)
+
+# Make zip
+cp -r "$KERNEL_IMG" "$AK3_DIR"/
+cd "$AK3_DIR" || exit
+zip -r9 Mystic-"$DEVICE"_"$CAF"_"$ZIP_DATE".zip ./*
+cd "$KERNEL_DIR" || exit
+
+sendKernel
+sendInfo  "<b>======================================</b>" \
+          "<b>Success Building :</b> <code>Mystic Kernel</code>" \
+          "<b>Linux Version :</b> <code>$LINUX_VERSION</code>" \
+          "<b>Build Date :</b> <code>$(date +"%A, %d %b %Y, %H:%M:%S")</code>" \
+          "<b>Total Build Time :</b> <code>$(("$DIFF" / 60)) Minute, $(("$DIFF" % 60)) Second</code>" \
+          "<b>Toolchain :</b> <code>$CCV</code>" \
+          "<b>Linker :</b> <code>$("$CLANG_DIR"/bin/ld.lld --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')</code>" \
+          "<b>Last Commit :</b> <code>$COMMIT</code>" \
+          "<b>======================================</b>" \
+          " " \
+          "<b>Provide your feedback in the @MysticKernelDiscussion group for this Beta Build 😉</b>"
