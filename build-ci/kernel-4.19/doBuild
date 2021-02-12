@@ -18,20 +18,19 @@ CAF="MSM-4.19"
 AK3_DIR=$KERNEL_DIR/ak3-whyred/
 export TZ="Asia/Jakarta"
 ZIP_DATE=$(TZ=Asia/Jakarta date +'%d%m%Y')
-BRANCH="$(git rev-parse --abbrev-ref HEAD)"
+SOURCE="$(git rev-parse --abbrev-ref HEAD)"
 COMMIT=$(git log --pretty=format:'%s' -1)
 
 # Kernel & Clang Setup
 CLANG_DIR="$KERNEL_DIR/clang"
 export PATH="$KERNEL_DIR/clang/bin:$PATH"
-CCV="$("$CLANG_DIR"/bin/clang --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')"
-LDV="$("$CLANG_DIR"/bin/ld.lld --version | head -n 1)"
+KBUILD_COMPILER_STRING="$("$CLANG_DIR"/bin/clang --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g')"
 
 export ZIP_DATE
-export BRANCH
+export SOURCE
 export ARCH=arm64
 export SUBARCH=arm64
-export KBUILD_COMPILER_STRING="$CCV + $LDV"
+export KBUILD_COMPILER_STRING
 export KBUILD_BUILD_USER="okta_10"
 export KBUILD_BUILD_HOST="dockerci"
 
@@ -54,7 +53,7 @@ sendKernel() {
 
 sendInfo  "<b>======================================</b>" \
           "<b>Start Building :</b> <code>Mystic Kernel</code>" \
-          "<b>Source Branch :</b> <code>$BRANCH</code>" \
+          "<b>Source Branch :</b> <code>$SOURCE</code>" \
           "<b>======================================</b>"
 
 BUILD_START=$(date +"%s")
@@ -94,7 +93,7 @@ sendInfo  "<b>======================================</b>" \
           "<b>Linux Version :</b> <code>$LINUX_VERSION</code>" \
           "<b>Build Date :</b> <code>$(date +"%A, %d %b %Y, %H:%M:%S")</code>" \
           "<b>Total Build Time :</b> <code>$(("$DIFF" / 60)) Minute, $(("$DIFF" % 60)) Second</code>" \
-          "<b>Toolchain :</b> <code>$CCV</code>" \
+          "<b>Toolchain :</b> <code>$("$CLANG_DIR"/bin/clang --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')</code>" \
           "<b>Linker :</b> <code>$("$CLANG_DIR"/bin/ld.lld --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')</code>" \
           "<b>Last Commit :</b> <code>$COMMIT</code>" \
           "<b>======================================</b>" \
