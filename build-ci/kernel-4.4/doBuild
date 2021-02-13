@@ -6,7 +6,7 @@
 KERNEL_DIR=$PWD
 export TZ="Asia/Jakarta"
 ZIP_DATE=$(TZ=Asia/Jakarta date +'%d%m%Y')
-BRANCH="$(git rev-parse --abbrev-ref HEAD)"
+SOURCE="$(git rev-parse --abbrev-ref HEAD)"
 
 # Kernel & Clang Setup
 CLANG_DIR="$KERNEL_DIR/clang"
@@ -15,12 +15,18 @@ CCV="$("$CLANG_DIR"/bin/clang --version | head -n 1 | perl -pe 's/\(http.*?\)//g
 LDV="$("$CLANG_DIR"/bin/ld.lld --version | head -n 1)"
 
 export ZIP_DATE
-export BRANCH
+export SOURCE
 export ARCH=arm64
 export SUBARCH=arm64
 export KBUILD_COMPILER_STRING="$CCV + $LDV"
 export KBUILD_BUILD_USER="okta_10"
 export KBUILD_BUILD_HOST="dockerci"
+
+if [[ "$*" =~ "stable" ]]; then
+  RELEASE="Stable"
+elif [[ "$*" =~ "beta" ]]; then
+  RELEASE="Beta"
+fi
 
 # Telegram
 TELEGRAM=Telegram/telegram
@@ -36,7 +42,7 @@ sendInfo() {
 sendKernel() {
   "${TELEGRAM}" -f "$(echo "$AK3_DIR"/*.zip)" \
   -c "${CHANNEL_ID}" -H \
-      "<b># $DEVICE ($CODENAME-$CAM_BLOB) # MD5-Checksum:</b> <code>$(md5sum "$AK3_DIR"/*.zip | cut -d' ' -f1)</code>"
+      "# <code>$DEVICE-$CAM_BLOB</code> # <code>MD5-Checksum: $(md5sum "$AK3_DIR"/*.zip | cut -d' ' -f1)</code>"
 }
 
 # Setup Kernel IMG
@@ -51,72 +57,61 @@ fi
 # Setup Defconfig
 # if whyred
 if [[ "$*" =~ "whyredoldcam" ]]; then
-  export DEVICE="Redmi Note 5 Pro / AI"
-  export CODENAME="Whyred"
+  export DEVICE="Whyred"
   AK3_DIR=$KERNEL_DIR/ak3-whyred/
   export KERNEL_DEFCONFIG=mystic-whyred-oldcam_defconfig
   export CAM_BLOB="OldCam"
 elif [[ "$*" =~ "whyrednewcam" ]]; then
-  export DEVICE="Redmi Note 5 Pro / AI"
-  export CODENAME="Whyred"
+  export DEVICE="Whyred"
   AK3_DIR=$KERNEL_DIR/ak3-whyred/
   export KERNEL_DEFCONFIG=mystic-whyred-newcam_defconfig
   export CAM_BLOB="NewCam"
 # if tulip
 elif [[ "$*" =~ "tulipoldcam" ]]; then
-  export DEVICE="Redmi Note 6 Pro"
-  export CODENAME="Tulip"
+  export DEVICE="Tulip"
   AK3_DIR=$KERNEL_DIR/ak3-tulip/
   export KERNEL_DEFCONFIG=mystic-tulip-oldcam_defconfig
   export CAM_BLOB="OldCam"
 elif [[ "$*" =~ "tulipnewcam" ]]; then
-  export DEVICE="Redmi Note 6 Pro"
-  export CODENAME="Tulip"
+  export DEVICE="Tulip"
   AK3_DIR=$KERNEL_DIR/ak3-tulip/
   export KERNEL_DEFCONFIG=mystic-tulip-newcam_defconfig
   export CAM_BLOB="NewCam"
 # if lavender
 elif [[ "$*" =~ "lavenderoldcam" ]]; then
-  export DEVICE="Redmi Note 7"
-  export CODENAME="Lavender"
+  export DEVICE="Lavender"
   AK3_DIR=$KERNEL_DIR/ak3-lavender/
   export KERNEL_DEFCONFIG=mystic-lavender-oldcam_defconfig
   export CAM_BLOB="OldCam"
 elif [[ "$*" =~ "lavendernewcam" ]]; then
-  export DEVICE="Redmi Note 7"
-  export CODENAME="Lavender"
+  export DEVICE="Lavender"
   AK3_DIR=$KERNEL_DIR/ak3-lavender/
   export KERNEL_DEFCONFIG=mystic-lavender-newcam_defconfig
   export CAM_BLOB="NewCam"
 # if a26x
 elif [[ "$*" =~ "a26xoldcam" ]]; then
-  export DEVICE="Mi A2/6X"
-  export CODENAME="A26X" #Jasmine/Wayne
+  export DEVICE="A26X" #Jasmine/Wayne
   AK3_DIR=$KERNEL_DIR/ak3-a26x/
   export KERNEL_DEFCONFIG=mystic-a26x-oldcam_defconfig
   export CAM_BLOB="OldCam"
 elif [[ "$*" =~ "a26xnewcam" ]]; then
-  export DEVICE="Mi A2/6X"
-  export CODENAME="A26X" #Jasmine/Wayne
+  export DEVICE="A26X" #Jasmine/Wayne
   AK3_DIR=$KERNEL_DIR/ak3-a26x/
   export KERNEL_DEFCONFIG=mystic-a26x-newcam_defconfig
   export CAM_BLOB="NewCam"
 elif [[ "$*" =~ "a26xtencam" ]]; then
-  export DEVICE="Mi A2/6X"
-  export CODENAME="A26X" #Jasmine/Wayne
+  export DEVICE="A26X" #Jasmine/Wayne
   AK3_DIR=$KERNEL_DIR/ak3-a26x/
   export KERNEL_DEFCONFIG=mystic-a26x-tencam_defconfig
   export CAM_BLOB="TenCam"
 # if tulip MSM Thermal
 elif [[ "$*" =~ "msmtulipold" ]]; then
-  export DEVICE="Redmi Note 6 Pro"
-  export CODENAME="Tulip"
+  export DEVICE="Tulip"
   AK3_DIR=$KERNEL_DIR/ak3-tulip/
   export KERNEL_DEFCONFIG=mystic-tulip-oldcam_defconfig
   export CAM_BLOB="OldCam_MSM-Thermal"
 elif [[ "$*" =~ "msmtulipnew" ]]; then
-  export DEVICE="Redmi Note 6 Pro"
-  export CODENAME="Tulip"
+  export DEVICE="Tulip"
   AK3_DIR=$KERNEL_DIR/ak3-tulip/
   export KERNEL_DEFCONFIG=mystic-tulip-newcam_defconfig
   export CAM_BLOB="NewCam_MSM-Thermal"
@@ -136,7 +131,7 @@ make -j"$(nproc --all)" O=out \
 
 # If build error
 if ! [ -a "$KERNEL_IMG" ]; then
-  sendInfo "<b>Failed building kernel for <code>$DEVICE - $CAM_BLOB</code> Please fix it...!</b>"
+  sendInfo "<b>Failed building kernel for <code>$DEVICE-$RELEASE-$CAM_BLOB</code> Please fix it...!</b>"
   exit 1
 fi
 
@@ -149,7 +144,11 @@ elif [[ "$*" =~ "sdm660" ]]; then
   cp -r "$KERNEL_IMG" "$AK3_DIR"/
 fi
 cd "$AK3_DIR" || exit
-zip -r9 Mystic-"$CODENAME"-EAS_beta_"$CAM_BLOB"_"$ZIP_DATE".zip ./*
+if [[ "$*" =~ "stable" ]]; then
+  zip -r9 Mystic-EAS_"$DEVICE"_"$CAM_BLOB".zip ./*
+elif [[ "$*" =~ "beta" ]]; then
+  zip -r9 Mystic-EAS_"$DEVICE"_"$RELEASE"_"$CAM_BLOB"_"$ZIP_DATE".zip ./*
+fi
 cd "$KERNEL_DIR" || exit
 
 sendKernel
