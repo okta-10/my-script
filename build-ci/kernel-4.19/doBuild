@@ -56,7 +56,7 @@ sendInfo() {
 sendKernel() {
   "${TELEGRAM}" -f "$(echo "$AK3_DIR"/*.zip)" \
   -c "${CHANNEL_ID}" -H \
-      "<b># $DEVICE-$CAF # MD5-Checksum:</b> <code>$(md5sum "$AK3_DIR"/*.zip | cut -d' ' -f1)</code>"
+      "<b># $DEVICE-$RELEASE # MD5-Checksum:</b> <code>$(md5sum "$AK3_DIR"/*.zip | cut -d' ' -f1)</code>"
 }
 
 sendInfo  "<b>======================================</b>" \
