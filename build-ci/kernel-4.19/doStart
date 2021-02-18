@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+# Copyright (C) 2020-2021 Oktapra Amtono
+# Docker Kernel Build Script
+
+# Cloning some resource
+if [[ "$*" =~ "stable" ]]; then
+  RELEASE="Stable"
+  git clone --depth=1 https://github.com/okta-10/mystic_kernel_sdm660-4.19.git -b Mystic-4.19 kernel
+  cd kernel || exit
+elif [[ "$*" =~ "beta" ]]; then
+  RELEASE="Beta"
+  git clone --depth=1 https://"${TOKED}":x-oauth-basic@github.com/okta-10/mystic-beta.git -b Mystic-4.19 kernel
+  cd kernel || exit
+fi
+
+git clone --depth=1 https://github.com/fabianonline/telegram.sh Telegram
+git clone --depth=1 https://github.com/kdrag0n/proton-clang.git clang
+git clone --depth=1 https://github.com/okta-10/AnyKernel3.git -b whyred-nondtb ak3-whyred
+git clone --depth=1 https://github.com/okta-10/AnyKernel3.git -b a26x ak3-a26x
+
+# Telegram
+TELEGRAM=Telegram/telegram
+sendInfo() {
+  "${TELEGRAM}" -c "${CHANNEL_ID}" -H \
+      "$(
+          for POST in "${@}"; do
+              echo "${POST}"
+          done
+      )"
+}
+
+sendInfo	"<b>======================================</b>" \
+        	"<b>Start Building :</b> <code>Mystic Kernel ($RELEASE)</code>" \
+        	"<b>Source Branch :</b> <code>$(git rev-parse --abbrev-ref HEAD)</code>" \
+        	"<b>======================================</b>"
