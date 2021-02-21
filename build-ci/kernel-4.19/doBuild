@@ -14,7 +14,7 @@ SOURCE="$(git rev-parse --abbrev-ref HEAD)"
 # Kernel & Clang Setup
 CLANG_DIR="/usr"
 export PATH="/usr/bin:$PATH"
-KBUILD_COMPILER_STRING="$("$CLANG_DIR"/bin/clang --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g')"
+KBUILD_COMPILER_STRING="$("$CLANG_DIR"/bin/clang-11 --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g')"
 
 export ZIP_DATE
 export SOURCE
@@ -62,7 +62,7 @@ fi
 # Start Compile
 make O=out $KERNEL_DEFCONFIG
 make -j"$(nproc --all)" O=out \
-        CC=clang \
+        CC=clang-11 \
         CROSS_COMPILE=aarch64-linux-gnu- \
         CROSS_COMPILE_ARM32=arm-linux-gnueabi-
 
