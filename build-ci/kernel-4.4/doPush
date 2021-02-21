@@ -5,7 +5,7 @@
 SOURCE="$(git rev-parse --abbrev-ref HEAD)"
 COMMIT=$(git log --pretty=format:'%s' -1)
 
-CLANG_DIR="clang"
+CLANG_DIR="/usr"
 CCV="$("$CLANG_DIR"/bin/clang --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')"
 LDV="$("$CLANG_DIR"/bin/ld.lld --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')"
 LINUX_VERSION=$(cat < out/.config | grep Linux/arm64 | cut -d " " -f3)
