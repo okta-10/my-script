@@ -57,6 +57,11 @@ elif [[ "$*" =~ "lavender" ]]; then
   DEVICE="Lavender" #Jasmine/Wayne
   AK3_DIR=$KERNEL_DIR/ak3-lavender/
   export KERNEL_DEFCONFIG=vendor/mystic-lavender_defconfig
+elif [[ "$*" =~ "whydedoc" ]]; then
+  DEVICE="Whyred-OC"
+  AK3_DIR=$KERNEL_DIR/ak3-whyred/
+  export KERNEL_DEFCONFIG=vendor/mystic-whyred_defconfig
+  export LOCALVERSION="-OC"
 fi
 
 # Start Compile

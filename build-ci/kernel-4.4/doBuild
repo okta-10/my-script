@@ -6,6 +6,7 @@
 KERNEL_DIR=$PWD
 export TZ="Asia/Jakarta"
 ZIP_DATE=$(TZ=Asia/Jakarta date +'%d%m%Y')
+KERNEL_IMG=$KERNEL_DIR/out/arch/arm64/boot/Image.gz-dtb
 SOURCE="$(git rev-parse --abbrev-ref HEAD)"
 
 # Kernel & Clang Setup
@@ -42,17 +43,8 @@ sendInfo() {
 sendKernel() {
   "${TELEGRAM}" -f "$(echo "$AK3_DIR"/*.zip)" \
   -c "${CHANNEL_ID}" -H \
-      "# <code>$DEVICE-$CAM_BLOB</code> # <code>MD5-Checksum: $(md5sum "$AK3_DIR"/*.zip | cut -d' ' -f1)</code>"
+      "# <code>$DEVICE-$VARIANT</code> # <code>MD5-Checksum: $(md5sum "$AK3_DIR"/*.zip | cut -d' ' -f1)</code>"
 }
-
-# Setup Kernel IMG
-# for whyred and tulip, build with dtbs for overclock and non-overclock
-if [[ "$*" =~ "sdm636" ]]; then
-  KERNEL_IMG=$KERNEL_DIR/out/arch/arm64/boot/Image.gz
-# for lavender and a26x (jasmine/wayne)
-elif [[ "$*" =~ "sdm660" ]]; then
-  KERNEL_IMG=$KERNEL_DIR/out/arch/arm64/boot/Image.gz-dtb
-fi
 
 # Setup Defconfig
 # if whyred
@@ -60,61 +52,76 @@ if [[ "$*" =~ "whyredoldcam" ]]; then
   export DEVICE="Whyred"
   AK3_DIR=$KERNEL_DIR/ak3-whyred/
   export KERNEL_DEFCONFIG=mystic-whyred-oldcam_defconfig
-  export CAM_BLOB="OldCam"
+  export VARIANT="OldCam"
 elif [[ "$*" =~ "whyrednewcam" ]]; then
   export DEVICE="Whyred"
   AK3_DIR=$KERNEL_DIR/ak3-whyred/
   export KERNEL_DEFCONFIG=mystic-whyred-newcam_defconfig
-  export CAM_BLOB="NewCam"
+  export VARIANT="NewCam"
 # if tulip
 elif [[ "$*" =~ "tulipoldcam" ]]; then
   export DEVICE="Tulip"
   AK3_DIR=$KERNEL_DIR/ak3-tulip/
   export KERNEL_DEFCONFIG=mystic-tulip-oldcam_defconfig
-  export CAM_BLOB="OldCam"
+  export VARIANT="OldCam"
 elif [[ "$*" =~ "tulipnewcam" ]]; then
   export DEVICE="Tulip"
   AK3_DIR=$KERNEL_DIR/ak3-tulip/
   export KERNEL_DEFCONFIG=mystic-tulip-newcam_defconfig
-  export CAM_BLOB="NewCam"
+  export VARIANT="NewCam"
 # if lavender
 elif [[ "$*" =~ "lavenderoldcam" ]]; then
   export DEVICE="Lavender"
   AK3_DIR=$KERNEL_DIR/ak3-lavender/
   export KERNEL_DEFCONFIG=mystic-lavender-oldcam_defconfig
-  export CAM_BLOB="OldCam"
+  export VARIANT="OldCam"
 elif [[ "$*" =~ "lavendernewcam" ]]; then
   export DEVICE="Lavender"
   AK3_DIR=$KERNEL_DIR/ak3-lavender/
   export KERNEL_DEFCONFIG=mystic-lavender-newcam_defconfig
-  export CAM_BLOB="NewCam"
+  export VARIANT="NewCam"
 # if a26x
 elif [[ "$*" =~ "a26xoldcam" ]]; then
   export DEVICE="A26X" #Jasmine/Wayne
   AK3_DIR=$KERNEL_DIR/ak3-a26x/
   export KERNEL_DEFCONFIG=mystic-a26x-oldcam_defconfig
-  export CAM_BLOB="OldCam"
+  export VARIANT="OldCam"
 elif [[ "$*" =~ "a26xnewcam" ]]; then
   export DEVICE="A26X" #Jasmine/Wayne
   AK3_DIR=$KERNEL_DIR/ak3-a26x/
   export KERNEL_DEFCONFIG=mystic-a26x-newcam_defconfig
-  export CAM_BLOB="NewCam"
+  export VARIANT="NewCam"
 elif [[ "$*" =~ "a26xtencam" ]]; then
   export DEVICE="A26X" #Jasmine/Wayne
   AK3_DIR=$KERNEL_DIR/ak3-a26x/
   export KERNEL_DEFCONFIG=mystic-a26x-tencam_defconfig
-  export CAM_BLOB="TenCam"
-# if tulip MSM Thermal
-elif [[ "$*" =~ "msmtulipold" ]]; then
+  export VARIANT="TenCam"
+# if whyred-oc
+elif [[ "$*" =~ "ocwhyredold" ]]; then
+  export DEVICE="Whyred"
+  AK3_DIR=$KERNEL_DIR/ak3-whyred/
+  export KERNEL_DEFCONFIG=mystic-whyred-oldcam_defconfig
+  export LOCALVERSION="-OC"
+  export VARIANT="OldCam-OC"
+elif [[ "$*" =~ "ocwhyrednew" ]]; then
+  export DEVICE="Whyred"
+  AK3_DIR=$KERNEL_DIR/ak3-whyred/
+  export KERNEL_DEFCONFIG=mystic-whyred-newcam_defconfig
+  export LOCALVERSION="-OC"
+  export VARIANT="NewCam-OC"
+# if tulip-oc
+elif [[ "$*" =~ "octulipold" ]]; then
   export DEVICE="Tulip"
   AK3_DIR=$KERNEL_DIR/ak3-tulip/
   export KERNEL_DEFCONFIG=mystic-tulip-oldcam_defconfig
-  export CAM_BLOB="OldCam_MSM-Thermal"
-elif [[ "$*" =~ "msmtulipnew" ]]; then
+  export LOCALVERSION="-OC"
+  export VARIANT="OldCam-OC"
+elif [[ "$*" =~ "octulipnew" ]]; then
   export DEVICE="Tulip"
   AK3_DIR=$KERNEL_DIR/ak3-tulip/
   export KERNEL_DEFCONFIG=mystic-tulip-newcam_defconfig
-  export CAM_BLOB="NewCam_MSM-Thermal"
+  export LOCALVERSION="-OC"
+  export VARIANT="NewCam-OC"
 fi
 
 # Start Compile
@@ -126,23 +133,17 @@ make -j"$(nproc --all)" O=out \
 
 # If build error
 if ! [ -a "$KERNEL_IMG" ]; then
-  sendInfo "<b>Failed building kernel for <code>$DEVICE-$RELEASE-$CAM_BLOB</code> Please fix it...!</b>"
+  sendInfo "<b>Failed building kernel for <code>$DEVICE-$RELEASE-$VARIANT</code> Please fix it...!</b>"
   exit 1
 fi
 
 # Make zip
-# for whyred and tulip, build with dtbs for overclock and non-overclock
-if [[ "$*" =~ "sdm636" ]]; then
-  cp -r "$KERNEL_IMG" "$AK3_DIR"/kernel/
-# for lavender and a26x (jasmine/wayne)
-elif [[ "$*" =~ "sdm660" ]]; then
-  cp -r "$KERNEL_IMG" "$AK3_DIR"/
-fi
+cp -r "$KERNEL_IMG" "$AK3_DIR"/
 cd "$AK3_DIR" || exit
 if [[ "$*" =~ "stable" ]]; then
-  zip -r9 Mystic-EAS_"$DEVICE"_"$CAM_BLOB".zip ./*
+  zip -r9 Mystic-EAS_"$DEVICE"_"$VARIANT".zip ./*
 elif [[ "$*" =~ "beta" ]]; then
-  zip -r9 Mystic-EAS_"$DEVICE"_"$RELEASE"_"$CAM_BLOB"_"$ZIP_DATE".zip ./*
+  zip -r9 Mystic-EAS_"$DEVICE"_"$RELEASE"_"$VARIANT"_"$ZIP_DATE".zip ./*
 fi
 cd "$KERNEL_DIR" || exit
 
