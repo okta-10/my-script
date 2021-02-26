@@ -1,0 +1,47 @@
+diff --git a/arch/arm64/boot/dts/vendor/qcom/sdm660-regulator.dtsi b/arch/arm64/boot/dts/vendor/qcom/sdm660-regulator.dtsi
+index bc317a391b8c1..01d42d876b00a 100755
+--- a/arch/arm64/boot/dts/vendor/qcom/sdm660-regulator.dtsi
++++ b/arch/arm64/boot/dts/vendor/qcom/sdm660-regulator.dtsi
+@@ -754,7 +754,7 @@
+ 					/* Speed bin 3 */
+ 					<300000000  633600000  902400000
+ 					1113600000 1401600000 1536000000
+-					1612800000 1843200000>,
++					1747200000 1843200000>,
+ 
+ 					/* Speed bin 4 */
+ 					<300000000  633600000  902400000
+@@ -904,7 +904,7 @@
+ 
+ 					/* Speed bin 3 */
+ 					<300000000  1113600000 1401600000
+-					 1747200000 1804800000 2150400000
++					 1747200000 1958400000 2150400000
+ 					 2208000000>,
+ 
+ 					/* Speed bin 4 */
+diff --git a/arch/arm64/boot/dts/vendor/qcom/sdm660.dtsi b/arch/arm64/boot/dts/vendor/qcom/sdm660.dtsi
+index 402e1f772ae0d..c520f8f25ebd0 100755
+--- a/arch/arm64/boot/dts/vendor/qcom/sdm660.dtsi
++++ b/arch/arm64/boot/dts/vendor/qcom/sdm660.dtsi
+@@ -1200,7 +1200,8 @@
+ 			<  1113600000 0x0404003a 0x052e002e 0x2 4 >,
+ 			<  1401600000 0x04040049 0x073a003a 0x2 5 >,
+ 			<  1536000000 0x04040050 0x08400040 0x2 6 >,
+-			<  1612800000 0x04040054 0x09430043 0x2 7 >;
++			<  1747200000 0x0404005b 0x09480048 0x2 7 >,
++			<  1843200000 0x04040060 0x094c004c 0x3 8 >;
+ 
+ 		qcom,pwrcl-speedbin4-v0 =
+ 			<   300000000 0x0004000f 0x01200020 0x1 1 >,
+@@ -1235,7 +1236,9 @@
+ 			<  1113600000 0x0404003a 0x052e002e 0x1 2 >,
+ 			<  1401600000 0x04040049 0x073a003a 0x2 3 >,
+ 			<  1747200000 0x0404005b 0x09480048 0x2 4 >,
+-			<  1804800000 0x0404005e 0x094b004b 0x2 5 >;
++			<  1958400000 0x04040066 0x0a510051 0x2 5 >,
++			<  2150400000 0x04040070 0x0b590059 0x2 6 >,
++			<  2208000000 0x04040073 0x0b5c005c 0x3 7 >;
+ 
+ 		qcom,perfcl-speedbin4-v0 =
+ 			<   300000000 0x0004000f 0x01200020 0x1 1 >,
