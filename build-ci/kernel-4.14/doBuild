@@ -25,7 +25,7 @@ BUILD_START=$(date +"%s")
 # Kernel & Clang Setup
 CLANG_DIR="/usr"
 export PATH="/usr/bin:$PATH"
-KBUILD_COMPILER_STRING="$("$CLANG_DIR"/bin/clang-11 --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g')"
+KBUILD_COMPILER_STRING="$("$CLANG_DIR"/bin/clang-13 --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g')"
 
 export ZIP_DATE
 export SOURCE
@@ -60,7 +60,7 @@ sendInfo  "<b>======================================</b>" \
 # Start Compile
 make O=out $KERNEL_DEFCONFIG
 make -j"$(nproc --all)" O=out \
-        CC=clang-11 \
+        CC=clang-13 \
         CROSS_COMPILE=aarch64-linux-gnu- \
         CROSS_COMPILE_ARM32=arm-linux-gnueabi-
 
@@ -88,8 +88,8 @@ sendInfo  "<b>======================================</b>" \
           "<b>Linux Version :</b> <code>$LINUX_VERSION</code>" \
           "<b>Build Date :</b> <code>$(date +"%A, %d %b %Y, %H:%M:%S")</code>" \
           "<b>Total Build Time :</b> <code>$(("$DIFF" / 60)) Minute, $(("$DIFF" % 60)) Second</code>" \
-          "<b>Toolchain :</b> <code>$("$CLANG_DIR"/bin/clang-11 --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')</code>" \
-          "<b>Linker :</b> <code>$("$CLANG_DIR"/bin/ld.lld-11 --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')</code>" \
+          "<b>Toolchain :</b> <code>$("$CLANG_DIR"/bin/clang-13 --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')</code>" \
+          "<b>Linker :</b> <code>$("$CLANG_DIR"/bin/ld.lld-13 --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')</code>" \
           "<b>Last Commit :</b> <code>$COMMIT</code>" \
           "<b>======================================</b>" \
           " " \

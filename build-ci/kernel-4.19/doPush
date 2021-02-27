@@ -31,8 +31,8 @@ sendInfo  "<b>======================================</b>" \
           "<b>Success Building :</b> <code>Mystic Kernel ($RELEASE)</code>" \
           "<b>Linux Version :</b> <code>$LINUX_VERSION</code>" \
           "<b>Build Date :</b> <code>$(date +"%A, %d %b %Y, %H:%M:%S")</code>" \
-          "<b>Toolchain :</b> <code>$("$CLANG_DIR"/bin/clang-11 --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')</code>" \
-          "<b>Linker :</b> <code>$("$CLANG_DIR"/bin/ld.lld-11 --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')</code>" \
+          "<b>Toolchain :</b> <code>$("$CLANG_DIR"/bin/clang-13 --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')</code>" \
+          "<b>Linker :</b> <code>$("$CLANG_DIR"/bin/ld.lld-13 --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')</code>" \
           "<b>Last Changelog :</b> <code>$COMMIT</code>" \
           "<b>======================================</b>" \
           " " \

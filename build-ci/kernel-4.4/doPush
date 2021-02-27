@@ -6,8 +6,8 @@ SOURCE="$(git rev-parse --abbrev-ref HEAD)"
 COMMIT=$(git log --pretty=format:'%s' -1)
 
 CLANG_DIR="/usr"
-CCV="$("$CLANG_DIR"/bin/clang-11 --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')"
-LDV="$("$CLANG_DIR"/bin/ld.lld-11 --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')"
+CCV="$("$CLANG_DIR"/bin/clang-13 --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')"
+LDV="$("$CLANG_DIR"/bin/ld.lld-13 --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')"
 LINUX_VERSION=$(cat < out/.config | grep Linux/arm64 | cut -d " " -f3)
 
 export SOURCE
