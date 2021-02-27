@@ -2,14 +2,28 @@
 # Copyright (C) 2020-2021 Oktapra Amtono
 # Docker Kernel Build Script
 
-# Cloning some resource
+# Kernel Directory
+KERNEL_DIR=$PWD
+
+# Device Name
+if [[ "$*" =~ "whyred" ]]; then
+  DEVICE="whyred"
+elif [[ "$*" =~ "lavender" ]]; then
+  DEVICE="lavender"
+elif [[ "$*" =~ "a26x" ]]; then
+  DEVICE="a26x"
+fi
+
+if [[ "$*" =~ "oc" ]]; then
+  export LOCALVERSION="-OC"
+fi
 
 # Setup Environtment
-KERNEL_DIR=$PWD
-KERNEL_IMG=$KERNEL_DIR/out/arch/arm64/boot/Image.gz-dtb
 export TZ="Asia/Jakarta"
 ZIP_DATE=$(TZ=Asia/Jakarta date +'%d%m%Y')
+KERNEL_IMG=$KERNEL_DIR/out/arch/arm64/boot/Image.gz-dtb
 SOURCE="$(git rev-parse --abbrev-ref HEAD)"
+AK3_DIR=$KERNEL_DIR/ak3-$DEVICE/
 
 # Kernel & Clang Setup
 CLANG_DIR="/usr"
@@ -38,34 +52,13 @@ sendInfo() {
 sendKernel() {
   "${TELEGRAM}" -f "$(echo "$AK3_DIR"/*.zip)" \
   -c "${CHANNEL_ID}" -H \
-      "<b># $DEVICE # MD5-Checksum:</b> <code>$(md5sum "$AK3_DIR"/*.zip | cut -d' ' -f1)</code>"
+      "# <code>$DEVICE</code> # <code>MD5-Checksum: $(md5sum "$AK3_DIR"/*.zip | cut -d' ' -f1)</code>"
 }
 
-# Setup Defconfig
-# if whyred
-if [[ "$*" =~ "whyred" ]]; then
-  DEVICE="Whyred"
-  AK3_DIR=$KERNEL_DIR/ak3-whyred/
-  export KERNEL_DEFCONFIG=vendor/mystic-whyred_defconfig
-# if jasmine/wayne
-elif [[ "$*" =~ "a26x" ]]; then
-  DEVICE="A26X" #Jasmine/Wayne
-  AK3_DIR=$KERNEL_DIR/ak3-a26x/
-  export KERNEL_DEFCONFIG=vendor/mystic-a26x_defconfig
-# if lavender
-elif [[ "$*" =~ "lavender" ]]; then
-  DEVICE="Lavender" #Jasmine/Wayne
-  AK3_DIR=$KERNEL_DIR/ak3-lavender/
-  export KERNEL_DEFCONFIG=vendor/mystic-lavender_defconfig
-elif [[ "$*" =~ "whydedoc" ]]; then
-  DEVICE="Whyred-OC"
-  AK3_DIR=$KERNEL_DIR/ak3-whyred/
-  export KERNEL_DEFCONFIG=vendor/mystic-whyred_defconfig
-  export LOCALVERSION="-OC"
-fi
+# Export Defconfig
+make O=out vendor/mystic-"$DEVICE"_defconfig
 
 # Start Compile
-make O=out $KERNEL_DEFCONFIG
 make -j"$(nproc --all)" O=out \
         CC=clang-11 \
         CROSS_COMPILE=aarch64-linux-gnu- \
@@ -73,16 +66,16 @@ make -j"$(nproc --all)" O=out \
 
 # If build error
 if ! [ -a "$KERNEL_IMG" ]; then
-  sendInfo "<b>Failed building kernel for <code>$DEVICE $RELEASE</code> Please fix it...!</b>"
+  sendInfo "<b>Failed building kernel for <code>$DEVICE</code> Please fix it...!</b>"
   exit 1
 fi
 
 # Make zip
 cp -r "$KERNEL_IMG" "$AK3_DIR"/
 cd "$AK3_DIR" || exit
-if [[ "$*" =~ "stable" ]]; then
-  zip -r9 Mystic-"$DEVICE".zip ./*
-elif [[ "$*" =~ "beta" ]]; then
+if [[ "$*" =~ "oc" ]]; then
+  zip -r9 Mystic-"$DEVICE"_beta"$LOCALVERSION"_"$ZIP_DATE".zip ./*
+else
   zip -r9 Mystic-"$DEVICE"_beta_"$ZIP_DATE".zip ./*
 fi
 cd "$KERNEL_DIR" || exit

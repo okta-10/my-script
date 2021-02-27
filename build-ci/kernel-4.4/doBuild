@@ -2,12 +2,39 @@
 # Copyright (C) 2020-2021 Oktapra Amtono
 # Docker Kernel Build Script
 
-# Setup Environtment
+# Kernel Directory
 KERNEL_DIR=$PWD
+
+# Device Name
+if [[ "$*" =~ "whyred" ]]; then
+  DEVICE="whyred"
+elif [[ "$*" =~ "tulip" ]]; then
+  DEVICE="tulip"
+elif [[ "$*" =~ "lavender" ]]; then
+  DEVICE="lavender"
+elif [[ "$*" =~ "a26x" ]]; then
+  DEVICE="a26x"
+fi
+
+# Cam Version
+if [[ "$*" =~ "oldcam" ]]; then
+  CAMVERSION="oldcam"
+elif [[ "$*" =~ "newcam" ]]; then
+  CAMVERSION="newcam"
+elif [[ "$*" =~ "tencam" ]]; then
+  CAMVERSION="tencam"
+fi
+
+if [[ "$*" =~ "oc" ]]; then
+  export LOCALVERSION="-OC"
+fi
+
+# Setup Environtment
 export TZ="Asia/Jakarta"
 ZIP_DATE=$(TZ=Asia/Jakarta date +'%d%m%Y')
 KERNEL_IMG=$KERNEL_DIR/out/arch/arm64/boot/Image.gz-dtb
 SOURCE="$(git rev-parse --abbrev-ref HEAD)"
+AK3_DIR=$KERNEL_DIR/ak3-$DEVICE/
 
 # Kernel & Clang Setup
 CLANG_DIR="/usr"
@@ -23,14 +50,10 @@ export KBUILD_COMPILER_STRING="$CCV + $LDV"
 export KBUILD_BUILD_USER="okta_10"
 export KBUILD_BUILD_HOST="dockerci"
 
-if [[ "$*" =~ "stable" ]]; then
-  RELEASE="Stable"
-elif [[ "$*" =~ "beta" ]]; then
-  RELEASE="Beta"
-fi
-
-# Telegram
+# Telegram Directory
 TELEGRAM=Telegram/telegram
+
+# Push Info Kernel to Telegram
 sendInfo() {
   "${TELEGRAM}" -c "${CHANNEL_ID}" -H \
       "$(
@@ -40,92 +63,17 @@ sendInfo() {
       )"
 }
 
+# Push Zip Kernel to Telegram
 sendKernel() {
   "${TELEGRAM}" -f "$(echo "$AK3_DIR"/*.zip)" \
   -c "${CHANNEL_ID}" -H \
-      "# <code>$DEVICE-$VARIANT</code> # <code>MD5-Checksum: $(md5sum "$AK3_DIR"/*.zip | cut -d' ' -f1)</code>"
+      "# <code>$DEVICE-$CAMVERSION</code> # <code>MD5-Checksum: $(md5sum "$AK3_DIR"/*.zip | cut -d' ' -f1)</code>"
 }
 
-# Setup Defconfig
-# if whyred
-if [[ "$*" =~ "whyredoldcam" ]]; then
-  export DEVICE="Whyred"
-  AK3_DIR=$KERNEL_DIR/ak3-whyred/
-  export KERNEL_DEFCONFIG=mystic-whyred-oldcam_defconfig
-  export VARIANT="OldCam"
-elif [[ "$*" =~ "whyrednewcam" ]]; then
-  export DEVICE="Whyred"
-  AK3_DIR=$KERNEL_DIR/ak3-whyred/
-  export KERNEL_DEFCONFIG=mystic-whyred-newcam_defconfig
-  export VARIANT="NewCam"
-# if tulip
-elif [[ "$*" =~ "tulipoldcam" ]]; then
-  export DEVICE="Tulip"
-  AK3_DIR=$KERNEL_DIR/ak3-tulip/
-  export KERNEL_DEFCONFIG=mystic-tulip-oldcam_defconfig
-  export VARIANT="OldCam"
-elif [[ "$*" =~ "tulipnewcam" ]]; then
-  export DEVICE="Tulip"
-  AK3_DIR=$KERNEL_DIR/ak3-tulip/
-  export KERNEL_DEFCONFIG=mystic-tulip-newcam_defconfig
-  export VARIANT="NewCam"
-# if lavender
-elif [[ "$*" =~ "lavenderoldcam" ]]; then
-  export DEVICE="Lavender"
-  AK3_DIR=$KERNEL_DIR/ak3-lavender/
-  export KERNEL_DEFCONFIG=mystic-lavender-oldcam_defconfig
-  export VARIANT="OldCam"
-elif [[ "$*" =~ "lavendernewcam" ]]; then
-  export DEVICE="Lavender"
-  AK3_DIR=$KERNEL_DIR/ak3-lavender/
-  export KERNEL_DEFCONFIG=mystic-lavender-newcam_defconfig
-  export VARIANT="NewCam"
-# if a26x
-elif [[ "$*" =~ "a26xoldcam" ]]; then
-  export DEVICE="A26X" #Jasmine/Wayne
-  AK3_DIR=$KERNEL_DIR/ak3-a26x/
-  export KERNEL_DEFCONFIG=mystic-a26x-oldcam_defconfig
-  export VARIANT="OldCam"
-elif [[ "$*" =~ "a26xnewcam" ]]; then
-  export DEVICE="A26X" #Jasmine/Wayne
-  AK3_DIR=$KERNEL_DIR/ak3-a26x/
-  export KERNEL_DEFCONFIG=mystic-a26x-newcam_defconfig
-  export VARIANT="NewCam"
-elif [[ "$*" =~ "a26xtencam" ]]; then
-  export DEVICE="A26X" #Jasmine/Wayne
-  AK3_DIR=$KERNEL_DIR/ak3-a26x/
-  export KERNEL_DEFCONFIG=mystic-a26x-tencam_defconfig
-  export VARIANT="TenCam"
-# if whyred-oc
-elif [[ "$*" =~ "ocwhyredold" ]]; then
-  export DEVICE="Whyred"
-  AK3_DIR=$KERNEL_DIR/ak3-whyred/
-  export KERNEL_DEFCONFIG=mystic-whyred-oldcam_defconfig
-  export LOCALVERSION="-OC"
-  export VARIANT="OldCam-OC"
-elif [[ "$*" =~ "ocwhyrednew" ]]; then
-  export DEVICE="Whyred"
-  AK3_DIR=$KERNEL_DIR/ak3-whyred/
-  export KERNEL_DEFCONFIG=mystic-whyred-newcam_defconfig
-  export LOCALVERSION="-OC"
-  export VARIANT="NewCam-OC"
-# if tulip-oc
-elif [[ "$*" =~ "octulipold" ]]; then
-  export DEVICE="Tulip"
-  AK3_DIR=$KERNEL_DIR/ak3-tulip/
-  export KERNEL_DEFCONFIG=mystic-tulip-oldcam_defconfig
-  export LOCALVERSION="-OC"
-  export VARIANT="OldCam-OC"
-elif [[ "$*" =~ "octulipnew" ]]; then
-  export DEVICE="Tulip"
-  AK3_DIR=$KERNEL_DIR/ak3-tulip/
-  export KERNEL_DEFCONFIG=mystic-tulip-newcam_defconfig
-  export LOCALVERSION="-OC"
-  export VARIANT="NewCam-OC"
-fi
+# Export Defconfig
+make O=out mystic-"$DEVICE"-"$CAMVERSION"_defconfig
 
 # Start Compile
-make O=out $KERNEL_DEFCONFIG
 make -j"$(nproc --all)" O=out \
         CC=clang-11 \
         CROSS_COMPILE=aarch64-linux-gnu- \
@@ -133,17 +81,17 @@ make -j"$(nproc --all)" O=out \
 
 # If build error
 if ! [ -a "$KERNEL_IMG" ]; then
-  sendInfo "<b>Failed building kernel for <code>$DEVICE-$RELEASE-$VARIANT</code> Please fix it...!</b>"
+  sendInfo "<b>Failed building kernel for <code>$DEVICE-$CAMVERSION</code> Please fix it...!</b>"
   exit 1
 fi
 
 # Make zip
 cp -r "$KERNEL_IMG" "$AK3_DIR"/
 cd "$AK3_DIR" || exit
-if [[ "$*" =~ "stable" ]]; then
-  zip -r9 Mystic-EAS_"$DEVICE"_"$VARIANT".zip ./*
-elif [[ "$*" =~ "beta" ]]; then
-  zip -r9 Mystic-EAS_"$DEVICE"_"$RELEASE"_"$VARIANT"_"$ZIP_DATE".zip ./*
+if [[ "$*" =~ "oc" ]]; then
+  zip -r9 Mystic-EAS_"$DEVICE"_beta_"$CAMVERSION""$LOCALVERSION"_"$ZIP_DATE".zip ./*
+else
+  zip -r9 Mystic-EAS_"$DEVICE"_beta_"$CAMVERSION"_"$ZIP_DATE".zip ./*
 fi
 cd "$KERNEL_DIR" || exit
 
