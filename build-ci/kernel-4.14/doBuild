@@ -3,7 +3,12 @@
 # Docker Kernel Build Script
 
 # Cloning some resource
-git clone --depth=1 https://"${TOKED}":x-oauth-basic@github.com/okta-10/mystic_kernel_sdm732-4.14.git -b Mystic-4.14 kernel
+if [[ "$*" =~ "stable" ]]; then
+  git clone --depth=1 https://github.com/okta-10/mystic_kernel_sdm732-4.14.git -b Mystic-4.14 kernel
+elif [[ "$*" =~ "beta" ]]; then
+  git clone --depth=1 https://"${TOKED}":x-oauth-basic@github.com/okta-10/mystic-beta.git -b Mystic-4.14 kernel
+fi
+
 cd kernel || exit
 git clone --depth=1 https://github.com/fabianonline/telegram.sh Telegram
 git clone --depth=1 https://github.com/okta-10/AnyKernel3.git -b surya ak3-surya
@@ -12,10 +17,8 @@ git clone --depth=1 https://github.com/okta-10/AnyKernel3.git -b surya ak3-surya
 KERNEL_DIR=$PWD
 KERNEL_IMG=$KERNEL_DIR/out/arch/arm64/boot/Image.gz-dtb
 KERNEL_DTBO=$KERNEL_DIR/out/arch/arm64/boot/dtbo.img
-KERNEL_DEFCONFIG=vendor/mystic-surya_defconfig
-DEVICE="Surya"
-CAF="MSM-4.14"
-AK3_DIR=$KERNEL_DIR/ak3-surya/
+DEVICE="surya"
+AK3_DIR=$KERNEL_DIR/ak3-"$DEVICE"/
 export TZ="Asia/Jakarta"
 ZIP_DATE=$(TZ=Asia/Jakarta date +'%d%m%Y')
 SOURCE="$(git rev-parse --abbrev-ref HEAD)"
@@ -49,7 +52,7 @@ sendInfo() {
 sendKernel() {
   "${TELEGRAM}" -f "$(echo "$AK3_DIR"/*.zip)" \
   -c "${CHANNEL_ID}" -H \
-      "<b># $DEVICE-$CAF # MD5-Checksum:</b> <code>$(md5sum "$AK3_DIR"/*.zip | cut -d' ' -f1)</code>"
+      "# <code>$DEVICE</code> # <code>md5: $(md5sum "$AK3_DIR"/*.zip | cut -d' ' -f1)</code>"
 }
 
 sendInfo  "<b>======================================</b>" \
@@ -58,7 +61,7 @@ sendInfo  "<b>======================================</b>" \
           "<b>======================================</b>"
 
 # Start Compile
-make O=out $KERNEL_DEFCONFIG
+make O=out vendor/mystic-"$DEVICE"_defconfig
 make -j"$(nproc --all)" O=out \
         CC=clang-13 \
         CROSS_COMPILE=aarch64-linux-gnu- \
@@ -69,7 +72,7 @@ DIFF=$(( BUILD_END - BUILD_START ))
 
 # If build error
 if ! [ -a "$KERNEL_IMG" ]; then
-  sendInfo "<b>Failed building kernel for <code>$DEVICE-$CAF</code> Please fix it...!</b>"
+  sendInfo "<b>Failed building kernel for <code>$DEVICE</code> Please fix it...!</b>"
   exit 1
 fi
 
@@ -79,7 +82,13 @@ LINUX_VERSION=$(cat < out/.config | grep Linux/arm64 | cut -d " " -f3)
 cp -r "$KERNEL_IMG" "$AK3_DIR"/
 cp -r "$KERNEL_DTBO" "$AK3_DIR"/
 cd "$AK3_DIR" || exit
-zip -r9 Mystic-"$DEVICE"_"$CAF"_"$ZIP_DATE".zip ./*
+
+if [[ "$*" =~ "stable" ]]; then
+  zip -r9 Mystic-"$DEVICE"_"$ZIP_DATE".zip ./*
+elif [[ "$*" =~ "beta" ]]; then
+  zip -r9 Mystic-"$DEVICE"_beta_"$ZIP_DATE".zip ./*
+fi
+
 cd "$KERNEL_DIR" || exit
 
 sendKernel
