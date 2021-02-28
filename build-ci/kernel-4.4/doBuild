@@ -67,7 +67,7 @@ sendInfo() {
 sendKernel() {
   "${TELEGRAM}" -f "$(echo "$AK3_DIR"/*.zip)" \
   -c "${CHANNEL_ID}" -H \
-      "# <code>$DEVICE-$CAMVERSION</code> # <code>MD5-Checksum: $(md5sum "$AK3_DIR"/*.zip | cut -d' ' -f1)</code>"
+      "# <code>$DEVICE-$CAMVERSION</code> # <code>md5: $(md5sum "$AK3_DIR"/*.zip | cut -d' ' -f1)</code>"
 }
 
 # Export Defconfig
@@ -89,9 +89,9 @@ fi
 cp -r "$KERNEL_IMG" "$AK3_DIR"/
 cd "$AK3_DIR" || exit
 if [[ "$*" =~ "oc" ]]; then
-  zip -r9 Mystic-EAS_"$DEVICE"_beta_"$CAMVERSION""$LOCALVERSION"_"$ZIP_DATE".zip ./*
+  zip -r9 Mystic-eas_"$DEVICE"_beta_"$CAMVERSION""$LOCALVERSION"_"$ZIP_DATE".zip ./*
 else
-  zip -r9 Mystic-EAS_"$DEVICE"_beta_"$CAMVERSION"_"$ZIP_DATE".zip ./*
+  zip -r9 Mystic-eas_"$DEVICE"_beta_"$CAMVERSION"_"$ZIP_DATE".zip ./*
 fi
 cd "$KERNEL_DIR" || exit
 
