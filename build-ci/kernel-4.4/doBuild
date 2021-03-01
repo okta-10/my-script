@@ -67,8 +67,11 @@ sendInfo() {
 sendKernel() {
   "${TELEGRAM}" -f "$(echo "$AK3_DIR"/*.zip)" \
   -c "${CHANNEL_ID}" -H \
-      "# <code>$DEVICE-$CAMVERSION</code> # <code>md5: $(md5sum "$AK3_DIR"/*.zip | cut -d' ' -f1)</code>"
+      "# <code>$DEVICE-$CAMVERSION</code> # <code>md5: $(md5sum "$AK3_DIR"/*.zip | cut -d' ' -f1)</code> # <code>Build Took : $(("$DIFF" / 60)) Minute, $(("$DIFF" % 60)) Second</code>"
 }
+
+# Start Count
+BUILD_START=$(date +"%s")
 
 # Export Defconfig
 make O=out mystic-"$DEVICE"-"$CAMVERSION"_defconfig
@@ -84,6 +87,10 @@ if ! [ -a "$KERNEL_IMG" ]; then
   sendInfo "<b>Failed building kernel for <code>$DEVICE-$CAMVERSION</code> Please fix it...!</b>"
   exit 1
 fi
+
+# End Count and Calculate Total Build Time
+BUILD_END=$(date +"%s")
+DIFF=$(( BUILD_END - BUILD_START ))
 
 # Make zip
 cp -r "$KERNEL_IMG" "$AK3_DIR"/

@@ -23,7 +23,6 @@ export TZ="Asia/Jakarta"
 ZIP_DATE=$(TZ=Asia/Jakarta date +'%d%m%Y')
 SOURCE="$(git rev-parse --abbrev-ref HEAD)"
 COMMIT=$(git log --pretty=format:'%s' -1)
-BUILD_START=$(date +"%s")
 
 # Kernel & Clang Setup
 CLANG_DIR="/usr"
@@ -52,7 +51,7 @@ sendInfo() {
 sendKernel() {
   "${TELEGRAM}" -f "$(echo "$AK3_DIR"/*.zip)" \
   -c "${CHANNEL_ID}" -H \
-      "# <code>$DEVICE</code> # <code>md5: $(md5sum "$AK3_DIR"/*.zip | cut -d' ' -f1)</code>"
+      "# <code>$DEVICE</code> # <code>md5: $(md5sum "$AK3_DIR"/*.zip | cut -d' ' -f1)</code> # <code>Build Took : $(("$DIFF" / 60)) Minute, $(("$DIFF" % 60)) Second</code>"
 }
 
 sendInfo  "<b>======================================</b>" \
@@ -60,21 +59,25 @@ sendInfo  "<b>======================================</b>" \
           "<b>Source Branch :</b> <code>$SOURCE</code>" \
           "<b>======================================</b>"
 
-# Start Compile
+# Start Count
+BUILD_START=$(date +"%s")
+
 make O=out vendor/mystic-"$DEVICE"_defconfig
+# Start Compile
 make -j"$(nproc --all)" O=out \
         CC=clang-13 \
         CROSS_COMPILE=aarch64-linux-gnu- \
         CROSS_COMPILE_ARM32=arm-linux-gnueabi-
-
-BUILD_END=$(date +"%s")
-DIFF=$(( BUILD_END - BUILD_START ))
 
 # If build error
 if ! [ -a "$KERNEL_IMG" ]; then
   sendInfo "<b>Failed building kernel for <code>$DEVICE</code> Please fix it...!</b>"
   exit 1
 fi
+
+# End Count and Calculate Total Build Time
+BUILD_END=$(date +"%s")
+DIFF=$(( BUILD_END - BUILD_START ))
 
 LINUX_VERSION=$(cat < out/.config | grep Linux/arm64 | cut -d " " -f3)
 
@@ -96,7 +99,6 @@ sendInfo  "<b>======================================</b>" \
           "<b>Success Building :</b> <code>Mystic Kernel</code>" \
           "<b>Linux Version :</b> <code>$LINUX_VERSION</code>" \
           "<b>Build Date :</b> <code>$(date +"%A, %d %b %Y, %H:%M:%S")</code>" \
-          "<b>Total Build Time :</b> <code>$(("$DIFF" / 60)) Minute, $(("$DIFF" % 60)) Second</code>" \
           "<b>Toolchain :</b> <code>$("$CLANG_DIR"/bin/clang-13 --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')</code>" \
           "<b>Linker :</b> <code>$("$CLANG_DIR"/bin/ld.lld-13 --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')</code>" \
           "<b>Last Commit :</b> <code>$COMMIT</code>" \
