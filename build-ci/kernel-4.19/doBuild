@@ -28,7 +28,7 @@ AK3_DIR=$KERNEL_DIR/ak3-$DEVICE/
 # Kernel & Clang Setup
 CLANG_DIR="/usr"
 export PATH="/usr/bin:$PATH"
-KBUILD_COMPILER_STRING="$("$CLANG_DIR"/bin/clang-13 --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g')"
+KBUILD_COMPILER_STRING="$("$CLANG_DIR"/bin/clang --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g')"
 
 export ZIP_DATE
 export SOURCE
@@ -63,7 +63,7 @@ make O=out vendor/mystic-"$DEVICE"_defconfig
 
 # Start Compile
 make -j"$(nproc --all)" O=out \
-        CC=clang-13 \
+        CC=clang \
         CROSS_COMPILE=aarch64-linux-gnu- \
         CROSS_COMPILE_ARM32=arm-linux-gnueabi-
 
