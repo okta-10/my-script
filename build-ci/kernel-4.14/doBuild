@@ -10,6 +10,7 @@ elif [[ "$*" =~ "beta" ]]; then
 fi
 
 cd kernel || exit
+git clone --depth=1 https://github.com/kdrag0n/proton-clang.git clang
 git clone --depth=1 https://github.com/fabianonline/telegram.sh Telegram
 git clone --depth=1 https://github.com/okta-10/AnyKernel3.git -b surya ak3-surya
 
@@ -25,8 +26,8 @@ SOURCE="$(git rev-parse --abbrev-ref HEAD)"
 COMMIT=$(git log --pretty=format:'%s' -1)
 
 # Kernel & Clang Setup
-CLANG_DIR="/usr"
-export PATH="/usr/bin:$PATH"
+CLANG_DIR="$KERNEL_DIR/clang"
+export PATH="$KERNEL_DIR/clang/bin:$PATH"
 KBUILD_COMPILER_STRING="$("$CLANG_DIR"/bin/clang --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g')"
 
 export ZIP_DATE
