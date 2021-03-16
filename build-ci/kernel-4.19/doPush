@@ -6,7 +6,7 @@ SOURCE="$(git rev-parse --abbrev-ref HEAD)"
 COMMIT=$(git log --pretty=format:'%s' -1)
 LINUX_VERSION=$(cat < out/.config | grep Linux/arm64 | cut -d " " -f3)
 
-CLANG_DIR="/usr"
+CLANG_DIR="clang"
 
 export SOURCE
 

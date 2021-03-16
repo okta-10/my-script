@@ -37,8 +37,8 @@ SOURCE="$(git rev-parse --abbrev-ref HEAD)"
 AK3_DIR=$KERNEL_DIR/ak3-$DEVICE/
 
 # Kernel & Clang Setup
-CLANG_DIR="/usr"
-export PATH="/usr/bin:$PATH"
+CLANG_DIR="$KERNEL_DIR/clang"
+export PATH="$KERNEL_DIR/clang/bin:$PATH"
 CCV="$("$CLANG_DIR"/bin/clang --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')"
 LDV="$("$CLANG_DIR"/bin/ld.lld --version | head -n 1)"
 
@@ -79,6 +79,11 @@ make O=out mystic-"$DEVICE"-"$CAMVERSION"_defconfig
 # Start Compile
 make -j"$(nproc --all)" O=out \
         CC=clang \
+        AR=llvm-ar \
+        NM=llvm-nm \
+        OBJCOPY=llvm-objcopy \
+        OBJDUMP=llvm-objdump \
+        STRIP=llvm-strip \
         CROSS_COMPILE=aarch64-linux-gnu- \
         CROSS_COMPILE_ARM32=arm-linux-gnueabi-
 

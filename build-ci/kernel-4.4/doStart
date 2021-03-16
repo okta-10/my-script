@@ -14,6 +14,7 @@ elif [[ "$*" =~ "beta" ]]; then
 fi
 
 git clone --depth=1 https://github.com/fabianonline/telegram.sh Telegram
+git clone --depth=1 https://github.com/kdrag0n/proton-clang.git clang
 git clone --depth=1 https://github.com/okta-10/AnyKernel3.git -b whyred-nondtb ak3-whyred
 git clone --depth=1 https://github.com/okta-10/AnyKernel3.git -b tulip-nondtb ak3-tulip
 git clone --depth=1 https://github.com/okta-10/AnyKernel3.git -b lavender ak3-lavender
