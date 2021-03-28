@@ -12,6 +12,8 @@ Just Noob Script, XD
 Compatible with DroneCI and CircleCI
 I only use those two Cloud CI
 ```
+*Here for my [DroneCI](https://github.com/okta-10/mystic-blender.git) setup*
+
 ##
 
 ### For local, see in "build-local" folder
