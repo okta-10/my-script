@@ -10,12 +10,6 @@ CLANG_DIR="clang"
 
 export SOURCE
 
-if [[ "$*" =~ "stable" ]]; then
-  RELEASE="Stable"
-elif [[ "$*" =~ "beta" ]]; then
-  RELEASE="Beta"
-fi
-
 # Telegram
 TELEGRAM=Telegram/telegram
 sendInfo() {
@@ -28,7 +22,7 @@ sendInfo() {
 }
 
 sendInfo  "<b>======================================</b>" \
-          "<b>Success Building :</b> <code>Mystic Kernel ($RELEASE)</code>" \
+          "<b>Success Building :</b> <code>Mystic Kernel</code>" \
           "<b>Linux Version :</b> <code>$LINUX_VERSION</code>" \
           "<b>Build Date :</b> <code>$(date +"%A, %d %b %Y, %H:%M:%S")</code>" \
           "<b>Toolchain :</b> <code>$("$CLANG_DIR"/bin/clang --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')</code>" \

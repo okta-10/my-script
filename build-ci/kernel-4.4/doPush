@@ -12,12 +12,6 @@ LINUX_VERSION=$(cat < out/.config | grep Linux/arm64 | cut -d " " -f3)
 
 export SOURCE
 
-if [[ "$*" =~ "stable" ]]; then
-  RELEASE="Stable"
-elif [[ "$*" =~ "beta" ]]; then
-  RELEASE="Beta"
-fi
-
 # Telegram
 TELEGRAM=Telegram/telegram
 sendInfo() {
@@ -30,7 +24,7 @@ sendInfo() {
 }
 
 sendInfo  "<b>======================================</b>" \
-          "<b>Success Building :</b> <code>Mystic Kernel ($RELEASE)</code>" \
+          "<b>Success Building :</b> <code>Mystic Kernel</code>" \
           "<b>Build Date :</b> <code>$(date +"%A, %d %b %Y, %H:%M:%S")</code>" \
           "<b>Linux Version :</b> <code>$LINUX_VERSION</code>" \
           "<b>Toolchain :</b> <code>$CCV</code>" \
