@@ -3,13 +3,14 @@
 # Docker Kernel Build Script
 
 # Cloning some resource
-if [[ "$*" =~ "stable" ]]; then
-  git clone --depth=1 https://github.com/okta-10/mystic_kernel_sdm732-4.14.git -b Mystic-4.14 kernel
-elif [[ "$*" =~ "beta" ]]; then
+if [[ "$*" =~ "beta" ]]; then
   git clone --depth=1 https://"${TOKED}":x-oauth-basic@github.com/okta-10/mystic-beta.git -b Mystic-4.14 kernel
+  cd kernel || exit
+elif [[ "$*" =~ "stable" ]]; then
+  git clone --depth=1 https://github.com/okta-10/mystic_kernel_sdm732-4.14.git -b Mystic-4.14 kernel
+  cd kernel || exit
 fi
 
-cd kernel || exit
 git clone --depth=1 https://github.com/kdrag0n/proton-clang.git clang
 git clone --depth=1 https://github.com/fabianonline/telegram.sh Telegram
 git clone --depth=1 https://github.com/okta-10/AnyKernel3.git -b surya ak3-surya
@@ -87,10 +88,10 @@ cp -r "$KERNEL_IMG" "$AK3_DIR"/
 cp -r "$KERNEL_DTBO" "$AK3_DIR"/
 cd "$AK3_DIR" || exit
 
-if [[ "$*" =~ "stable" ]]; then
-  zip -r9 Mystic-"$DEVICE"_"$ZIP_DATE".zip ./*
-elif [[ "$*" =~ "beta" ]]; then
+if [[ "$*" =~ "beta" ]]; then
   zip -r9 Mystic-"$DEVICE"_beta_"$ZIP_DATE".zip ./*
+else
+  zip -r9 Mystic-"$DEVICE"_"$ZIP_DATE".zip ./*
 fi
 
 cd "$KERNEL_DIR" || exit
