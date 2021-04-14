@@ -12,7 +12,11 @@ Just Noob Script, XD
 Compatible with DroneCI and CircleCI
 I only use those two Cloud CI
 ```
-*Here for my [DroneCI](https://github.com/okta-10/mystic-blender.git) setup*
+##### *Here for My [DroneCI & CircleCI](https://github.com/okta-10/mystic-blender.git) setup*
+
+###### *For CircleCI you need clone the Kernel Source from .config.yml [(See this)](https://github.com/okta-10/mystic-blender/blob/msm-4.4/.circleci/config.yml#L7)*
+
+###### *For DroneCI you can clone the Kernel Source from Script*
 
 ##
 
