@@ -12,7 +12,9 @@ elif [[ "$*" =~ "stable" ]]; then
 fi
 
 if [[ "$*" =~ "clang" ]]; then
-  git clone --depth=1 https://github.com/kdrag0n/proton-clang.git clang
+  wget https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/heads/master/clang-r416183b.tar.gz
+  mkdir clang
+  tar xvzf clang-*.tar.gz -C clang
 elif [[ "$*" =~ "gcc" ]]; then
   git clone --depth=1 https://github.com/arter97/arm64-gcc.git arm64
   git clone --depth=1 https://github.com/arter97/arm32-gcc.git arm32
