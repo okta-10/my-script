@@ -12,10 +12,10 @@ elif [[ "$*" =~ "beta" ]]; then
 fi
 
 if [[ "$*" =~ "clang" ]]; then
-  git clone --depth=1 https://github.com/kdrag0n/proton-clang.git clang
+  git clone --depth=1 https://github.com/okta-10/mystic-clang.git -b mystic clang
 elif [[ "$*" =~ "gcc" ]]; then
-  git clone --depth=1 https://github.com/arter97/arm64-gcc.git arm64
-  git clone --depth=1 https://github.com/arter97/arm32-gcc.git arm32
+  git clone --depth=1 https://github.com/okta-10/gcc-arm64.git arm64
+  git clone --depth=1 https://github.com/okta-10/gcc-arm32.git arm32
 fi
 
 git clone --depth=1 https://github.com/fabianonline/telegram.sh Telegram
