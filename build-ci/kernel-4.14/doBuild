@@ -18,6 +18,16 @@ elif [[ "$*" =~ "gcc" ]]; then
   git clone --depth=1 https://github.com/okta-10/gcc-arm32.git arm32
 fi
 
+if [[ "$*" =~ "clang" ]]; then
+  TOOLCHAIN_DIR="clang"
+  CCV="$("$TOOLCHAIN_DIR"/bin/clang --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')"
+  LDV="$("$TOOLCHAIN_DIR"/bin/ld.lld --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')"
+  KBUILD_COMPILER_STRING="$CCV + $LDV"
+elif [[ "$*" =~ "gcc" ]]; then
+  TOOLCHAIN_DIR="arm64"
+  KBUILD_COMPILER_STRING=$("$TOOLCHAIN_DIR"/bin/aarch64-elf-gcc --version | head -n 1)
+fi
+
 git clone --depth=1 https://github.com/fabianonline/telegram.sh Telegram
 git clone --depth=1 https://github.com/okta-10/AnyKernel3.git -b surya ak3-surya
 
@@ -115,6 +125,7 @@ sendInfo  "<b>======================================</b>" \
           "<b>Success Building :</b> <code>Mystic Kernel</code>" \
           "<b>Linux Version :</b> <code>$LINUX_VERSION</code>" \
           "<b>Build Date :</b> <code>$(date +"%A, %d %b %Y, %H:%M:%S")</code>" \
+          "<b>Toolchain :</b> <code>$KBUILD_COMPILER_STRING</code>" \
           "<b>Last Commit :</b> <code>$COMMIT</code>" \
           "<b>======================================</b>" \
           " " \
