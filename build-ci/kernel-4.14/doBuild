@@ -28,7 +28,7 @@ elif [[ "$*" =~ "gcc" ]]; then
   KBUILD_COMPILER_STRING=$("$TOOLCHAIN_DIR"/bin/aarch64-elf-gcc --version | head -n 1)
 fi
 
-git clone --depth=1 https://github.com/fabianonline/telegram.sh Telegram
+git clone --depth=1 https://github.com/okta-10/telegram.sh.git Telegram
 git clone --depth=1 https://github.com/okta-10/AnyKernel3.git -b surya ak3-surya
 
 # Setup Environtment
