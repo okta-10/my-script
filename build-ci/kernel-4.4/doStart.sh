@@ -12,10 +12,10 @@ elif [[ "$*" =~ "beta" ]]; then
 fi
 
 if [[ "$*" =~ "clang" ]]; then
-  git clone --depth=1 https://github.com/okta-10/mystic-clang.git -b mystic clang
+	git clone --depth=1 https://github.com/okta-10/mystic-clang.git -b mystic clang
 elif [[ "$*" =~ "gcc" ]]; then
-  git clone --depth=1 https://github.com/okta-10/gcc-arm64.git arm64
-  git clone --depth=1 https://github.com/okta-10/gcc-arm32.git arm32
+	git clone --depth=1 https://github.com/okta-10/gcc-arm64.git arm64
+	git clone --depth=1 https://github.com/okta-10/gcc-arm32.git arm32
 fi
 
 git clone --depth=1 https://github.com/okta-10/telegram.sh.git Telegram
@@ -27,15 +27,15 @@ git clone --depth=1 https://github.com/okta-10/AnyKernel3.git -b a26x ak3-a26x
 # Telegram
 TELEGRAM=Telegram/telegram
 sendInfo() {
-  "${TELEGRAM}" -c "${CHANNEL_ID}" -H \
-      "$(
-          for POST in "${@}"; do
-              echo "${POST}"
-          done
-      )"
+	"${TELEGRAM}" -c "${CHANNEL_ID}" -H \
+		"$(
+			for POST in "${@}"; do
+				echo "${POST}"
+			done
+		)"
 }
 
-sendInfo	"<b>======================================</b>" \
-        	"<b>Start Building :</b> <code>Mystic Kernel</code>" \
-        	"<b>Source Branch :</b> <code>$(git rev-parse --abbrev-ref HEAD)</code>" \
-        	"<b>======================================</b>"
+sendInfo "<b>======================================</b>" \
+	"<b>Start Building :</b> <code>Mystic Kernel</code>" \
+	"<b>Source Branch :</b> <code>$(git rev-parse --abbrev-ref HEAD)</code>" \
+	"<b>======================================</b>"
