@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Copyright (C) 2020-2021 Oktapra Amtono
+# Copyright (C) 2020-2022 Oktapra Amtono <oktapra.amtono@gmail.com>
 # Docker Kernel Build Script
 
 SOURCE="$(git rev-parse --abbrev-ref HEAD)"
@@ -8,13 +8,13 @@ COMMIT=$(git log --pretty=format:'%s' -1)
 LINUX_VERSION=$(cat <out/.config | grep Linux/arm64 | cut -d " " -f3)
 
 if [[ "$*" =~ "clang" ]]; then
-	TOOLCHAIN_DIR="clang"
-	CCV="$("$TOOLCHAIN_DIR"/bin/clang --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')"
-	LDV="$("$TOOLCHAIN_DIR"/bin/ld.lld --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')"
-	KBUILD_COMPILER_STRING="$CCV + $LDV"
+    TOOLCHAIN_DIR="clang"
+    CCV="$("$TOOLCHAIN_DIR"/bin/clang --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')"
+    LDV="$("$TOOLCHAIN_DIR"/bin/ld.lld --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')"
+    KBUILD_COMPILER_STRING="$CCV + $LDV"
 elif [[ "$*" =~ "gcc" ]]; then
-	TOOLCHAIN_DIR="arm64"
-	KBUILD_COMPILER_STRING=$("$TOOLCHAIN_DIR"/bin/aarch64-elf-gcc --version | head -n 1)
+    TOOLCHAIN_DIR="arm64"
+    KBUILD_COMPILER_STRING=$("$TOOLCHAIN_DIR"/bin/aarch64-elf-gcc --version | head -n 1)
 fi
 
 export SOURCE
@@ -22,20 +22,20 @@ export SOURCE
 # Telegram
 TELEGRAM=Telegram/telegram
 sendInfo() {
-	"${TELEGRAM}" -c "${CHANNEL_ID}" -H -D \
-		"$(
-			for POST in "${@}"; do
-				echo "${POST}"
-			done
-		)"
+    "${TELEGRAM}" -c "${CHANNEL_ID}" -H -D \
+        "$(
+            for POST in "${@}"; do
+                echo "${POST}"
+            done
+        )"
 }
 
 sendInfo "<b>======================================</b>" \
-	"<b>Success Building :</b> <code>Mystic Kernel</code>" \
-	"<b>Linux Version :</b> <code>$LINUX_VERSION</code>" \
-	"<b>Build Date :</b> <code>$(date +"%A, %d %b %Y, %H:%M:%S")</code>" \
-	"<b>Toolchain :</b> <code>$KBUILD_COMPILER_STRING</code>" \
-	"<b>Last Changelog :</b> <code>$COMMIT</code>" \
-	"<b>======================================</b>" \
-	" " \
-	"<b>Provide your feedback in the @MysticKernelDiscussion group for this Beta Build 😉</b>"
+    "<b>Success Building :</b> <code>Mystic Kernel</code>" \
+    "<b>Linux Version :</b> <code>$LINUX_VERSION</code>" \
+    "<b>Build Date :</b> <code>$(date +"%A, %d %b %Y, %H:%M:%S")</code>" \
+    "<b>Toolchain :</b> <code>$KBUILD_COMPILER_STRING</code>" \
+    "<b>Last Changelog :</b> <code>$COMMIT</code>" \
+    "<b>======================================</b>" \
+    " " \
+    "<b>Provide your feedback in the @MysticKernelDiscussion group for this Beta Build 😉</b>"

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Copyright (C) 2020-2021 Oktapra Amtono
-# Build Script
+# Copyright (C) 2020-2022 Oktapra Amtono <oktapra.amtono@gmail.com>
+# Kernel Build Script
 
 # Color
 blue="\033[1;36m"
