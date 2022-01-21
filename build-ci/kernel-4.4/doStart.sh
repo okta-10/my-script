@@ -2,15 +2,16 @@
 # Copyright (C) 2020-2022 Oktapra Amtono <oktapra.amtono@gmail.com>
 # Docker Kernel Build Script
 
-# Cloning some resource
+# Clone kernel source
 if [[ "$*" =~ "stable" ]]; then
     git clone --depth=1 https://github.com/okta-10/mystic_kernel_sdm660-4.4.git -b Mystic-4.4 kernel
     cd kernel || exit
 elif [[ "$*" =~ "beta" ]]; then
-    git clone --depth=1 https://"${TOKED}":x-oauth-basic@github.com/okta-10/mystic-beta.git -b Mystic-4.4 kernel
+    git clone --depth=1 https://"${GH_TOKEN}":x-oauth-basic@github.com/okta-10/mystic-beta.git -b Mystic-4.4 kernel
     cd kernel || exit
 fi
 
+# Clone toolchain
 if [[ "$*" =~ "clang" ]]; then
     git clone --depth=1 https://github.com/okta-10/mystic-clang.git -b mystic clang
 elif [[ "$*" =~ "gcc" ]]; then
@@ -18,24 +19,26 @@ elif [[ "$*" =~ "gcc" ]]; then
     git clone --depth=1 https://github.com/okta-10/gcc-arm64.git arm64
 fi
 
-git clone --depth=1 https://github.com/okta-10/telegram.sh.git Telegram
+# Clone anykernel3
 git clone --depth=1 https://github.com/okta-10/AnyKernel3.git -b a26x-dtb ak3-a26x
 git clone --depth=1 https://github.com/okta-10/AnyKernel3.git -b lavender-dtb ak3-lavender
 git clone --depth=1 https://github.com/okta-10/AnyKernel3.git -b tulip-dtb ak3-tulip
 git clone --depth=1 https://github.com/okta-10/AnyKernel3.git -b whyred-dtb ak3-whyred
 
-# Telegram
-TELEGRAM=Telegram/telegram
-sendInfo() {
-    "${TELEGRAM}" -c "${CHANNEL_ID}" -H \
-        "$(
-            for POST in "${@}"; do
-                echo "${POST}"
-            done
-        )"
+# Telegram setup
+push_message() {
+    curl -s -X POST \
+        https://api.telegram.org/bot"{$TG_BOT_TOKEN}"/sendMessage \
+        -d chat_id="${TG_CHAT_ID}" \
+        -d text="$1" \
+        -d "parse_mode=html" \
+        -d "disable_web_page_preview=true"
 }
 
-sendInfo "<b>======================================</b>" \
-    "<b>Start Building :</b> <code>Mystic Kernel</code>" \
-    "<b>Source Branch :</b> <code>$(git rev-parse --abbrev-ref HEAD)</code>" \
-    "<b>======================================</b>"
+# Push message to telegram
+push_message "
+<b>======================================</b>
+<b>Start Building :</b> <code>Mystic Kernel</code>
+<b>Linux Version :</b> <code>$(make kernelversion | cut -d " " -f5 | tr -d '\n')</code>
+<b>Source Branch :</b> <code>$(git rev-parse --abbrev-ref HEAD)</code>
+<b>======================================</b> "

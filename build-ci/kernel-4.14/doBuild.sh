@@ -2,15 +2,24 @@
 # Copyright (C) 2020-2022 Oktapra Amtono <oktapra.amtono@gmail.com>
 # Docker Kernel Build Script
 
-# Cloning some resource
+# Start counting
+BUILD_START=$(date +"%s")
+
+# Name and version of kernel
+DEVICE="surya"
+KERNEL_NAME="Mystic"
+KERNEL_VERSION="_beta"
+
+# Clone kernel source
 if [[ "$*" =~ "beta" ]]; then
-    git clone --depth=1 https://"${TOKED}":x-oauth-basic@github.com/okta-10/mystic-beta.git -b Mystic-4.14 kernel
+    git clone --depth=1 https://"${GH_TOKEN}":x-oauth-basic@github.com/okta-10/mystic-beta.git -b Mystic-4.14 kernel
     cd kernel || exit
 elif [[ "$*" =~ "stable" ]]; then
     git clone --depth=1 https://github.com/okta-10/mystic_kernel_sdm732-4.14.git -b Mystic-4.14 kernel
     cd kernel || exit
 fi
 
+# Clone toolchain
 if [[ "$*" =~ "clang" ]]; then
     git clone --depth=1 https://github.com/okta-10/mystic-clang.git -b mystic clang
 elif [[ "$*" =~ "gcc" ]]; then
@@ -18,78 +27,79 @@ elif [[ "$*" =~ "gcc" ]]; then
     git clone --depth=1 https://github.com/okta-10/gcc-arm64.git arm64
 fi
 
-if [[ "$*" =~ "clang" ]]; then
-    TOOLCHAIN_DIR="clang"
-    CCV="$("$TOOLCHAIN_DIR"/bin/clang --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')"
-    LDV="$("$TOOLCHAIN_DIR"/bin/ld.lld --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')"
-    KBUILD_COMPILER_STRING="$CCV + $LDV"
-elif [[ "$*" =~ "gcc" ]]; then
-    TOOLCHAIN_DIR="arm64"
-    KBUILD_COMPILER_STRING=$("$TOOLCHAIN_DIR"/bin/aarch64-elf-gcc --version | head -n 1)
-fi
-
-git clone --depth=1 https://github.com/okta-10/telegram.sh.git Telegram
+# Clone anykernel3
 git clone --depth=1 https://github.com/okta-10/AnyKernel3.git -b surya ak3-surya
 
-# Setup Environtment
+# Setup environtment
 KERNEL_DIR=$PWD
-DEVICE="surya"
-AK3_DIR=$KERNEL_DIR/ak3-"$DEVICE"
-KERNEL_IMG=$KERNEL_DIR/out/arch/arm64/boot/Image.gz-dtb
-KERNEL_DTBO=$KERNEL_DIR/out/arch/arm64/boot/dtbo.img
-ZIP_DATE=$(TZ=Asia/Jakarta date +'%d%m%Y')
-SOURCE="$(git rev-parse --abbrev-ref HEAD)"
-COMMIT=$(git log --pretty=format:'%s' -1)
-
-if [[ "$*" =~ "clang" ]]; then
-    # Kernel & Clang Setup
-    CLANG_DIR="$KERNEL_DIR/clang"
-    export PATH="$KERNEL_DIR/clang/bin:$PATH"
-    KBUILD_COMPILER_STRING="$("$CLANG_DIR"/bin/clang --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g')"
-    export KBUILD_COMPILER_STRING
-fi
-
-export ZIP_DATE
-export SOURCE
 export ARCH=arm64
 export SUBARCH=arm64
 export KBUILD_BUILD_USER="okta_10"
-export KBUILD_BUILD_HOST="dockerci"
+export KBUILD_BUILD_HOST="ArchLinux"
+AK3_DIR=$KERNEL_DIR/ak3-$DEVICE
+KERNEL_IMG=$KERNEL_DIR/out/arch/arm64/boot/Image.gz-dtb
+KERNEL_DTBO=$KERNEL_DIR/out/arch/arm64/boot/dtbo.img
+ZIP_DATE=$(TZ=Asia/Jakarta date +'%Y%m%d-%H%M')
+ZIP_NAME="$KERNEL_NAME"_"$DEVICE""$KERNEL_VERSION"_"$ZIP_DATE".zip
+CORES=$(grep -c ^processor /proc/cpuinfo)
+CPU=$(lscpu | sed -nr '/Model name/ s/.*:\s*(.*) */\1/p')
 
-# Telegram Directory
-TELEGRAM=Telegram/telegram
+# Setup toolchain
+if [[ "$*" =~ "clang" ]]; then
+    CLANG_DIR="$KERNEL_DIR/clang"
+    export PATH="$KERNEL_DIR/clang/bin:$PATH"
+    CLGV="$("$CLANG_DIR"/bin/clang --version | head -n 1)"
+    BINV="$("$CLANG_DIR"/bin/ld --version | head -n 1)"
+    LLDV="$("$CLANG_DIR"/bin/ld.lld --version | head -n 1)"
+    export KBUILD_COMPILER_STRING="$CLGV - $BINV - $LLDV"
+elif [[ "$*" =~ "gcc" ]]; then
+    GCC_DIR="$KERNEL_DIR/arm64"
+    GCCV="$("$GCC_DIR"/bin/aarch64-elf-gcc --version | head -n 1)"
+    BINV="$("$GCC_DIR"/bin/aarch64-elf-ld --version | head -n 1)"
+    LLDV="$("$GCC_DIR"/bin/aarch64-elf-ld.lld --version | head -n 1)"
+    export KBUILD_COMPILER_STRING="$GCCV - $BINV - $LLDV"
+fi
 
-# Push Info Kernel to Telegram
-sendInfo() {
-    "${TELEGRAM}" -c "${CHANNEL_ID}" -H -D \
-        "$(
-            for POST in "${@}"; do
-                echo "${POST}"
-            done
-        )"
+# Telegram setup
+push_message() {
+    curl -s -X POST \
+        https://api.telegram.org/bot"{$TG_BOT_TOKEN}"/sendMessage \
+        -d chat_id="${TG_CHAT_ID}" \
+        -d text="$1" \
+        -d "parse_mode=html" \
+        -d "disable_web_page_preview=true"
 }
 
-# Push Zip Kernel to Telegram
-sendKernel() {
-    "${TELEGRAM}" -f "$(echo "$AK3_DIR"/*.zip)" \
-        -c "${CHANNEL_ID}" -H \
-        "# <code>$DEVICE</code> # <code>md5: $(md5sum "$AK3_DIR"/*.zip | cut -d' ' -f1)</code> # <code>Build Took : $(("$DIFF" / 60)) Minute, $(("$DIFF" % 60)) Second</code>"
+push_document() {
+    curl -s -X POST \
+        https://api.telegram.org/bot"{$TG_BOT_TOKEN}"/sendDocument \
+        -F chat_id="${TG_CHAT_ID}" \
+        -F document=@"$1" \
+        -F caption="$2" \
+        -F "parse_mode=html" \
+        -F "disable_web_page_preview=true"
 }
 
 # Push info while start building
-sendInfo "<b>======================================</b>" \
-    "<b>Start Building :</b> <code>Mystic Kernel</code>" \
-    "<b>Source Branch :</b> <code>$SOURCE</code>" \
-    "<b>======================================</b>"
+push_message "
+<b>======================================</b>
+<b>Start Building :</b> <code>Mystic Kernel</code>
+<b>Linux Version :</b> <code>$(make kernelversion | cut -d " " -f5 | tr -d '\n')</code>
+<b>Source Branch :</b> <code>$(git rev-parse --abbrev-ref HEAD)</code>
+<b>======================================</b> "
 
-# Start Count
-BUILD_START=$(date +"%s")
-
+# Export defconfig
 make O=out vendor/mystic-"$DEVICE"_defconfig
-# Start Compile
+
+# Start compile
 if [[ "$*" =~ "clang" ]]; then
     make -j"$(nproc --all)" O=out \
         CC=clang \
+        AR=llvm-ar \
+        NM=llvm-nm \
+        OBJCOPY=llvm-objcopy \
+        OBJDUMP=llvm-objdump \
+        STRIP=llvm-strip \
         CROSS_COMPILE=aarch64-linux-gnu- \
         CROSS_COMPILE_ARM32=arm-linux-gnueabi-
 elif [[ "$*" =~ "gcc" ]]; then
@@ -98,38 +108,37 @@ elif [[ "$*" =~ "gcc" ]]; then
     make -j"$(nproc --all)" O=out ARCH=arm64
 fi
 
-# Push info while build error
+# Push message if build error
 if ! [ -a "$KERNEL_IMG" ]; then
-    sendInfo "<b>Failed building kernel for <code>$DEVICE</code> Please fix it...!</b>"
+    push_message "<b>Failed building kernel for <code>$DEVICE</code> Please fix it...!</b>"
     exit 1
 fi
-
-# End Count and Calculate Total Build Time
-BUILD_END=$(date +"%s")
-DIFF=$((BUILD_END - BUILD_START))
-
-LINUX_VERSION=$(cat <out/.config | grep Linux/arm64 | cut -d " " -f3)
 
 # Make zip
 cp -r "$KERNEL_IMG" "$AK3_DIR"/
 cp -r "$KERNEL_DTBO" "$AK3_DIR"/
 cd "$AK3_DIR" || exit
-
-if [[ "$*" =~ "beta" ]]; then
-    zip -r9 Mystic-"$DEVICE"_beta_"$ZIP_DATE".zip ./*
-else
-    zip -r9 Mystic-"$DEVICE"_"$ZIP_DATE".zip ./*
-fi
-
+zip -r9 "$ZIP_NAME" ./*
 cd "$KERNEL_DIR" || exit
 
-sendKernel
-sendInfo "<b>======================================</b>" \
-    "<b>Success Building :</b> <code>Mystic Kernel</code>" \
-    "<b>Linux Version :</b> <code>$LINUX_VERSION</code>" \
-    "<b>Build Date :</b> <code>$(date +"%A, %d %b %Y, %H:%M:%S")</code>" \
-    "<b>Toolchain :</b> <code>$KBUILD_COMPILER_STRING</code>" \
-    "<b>Last Commit :</b> <code>$COMMIT</code>" \
-    "<b>======================================</b>" \
-    " " \
-    "<b>Provide your feedback in the @MysticKernelDiscussion group for this Beta Build 😉</b>"
+# End count and calculate total build time
+BUILD_END=$(date +"%s")
+DIFF=$((BUILD_END - BUILD_START))
+
+# Push kernel to telegram
+push_document "$AK3_DIR/$ZIP_NAME" "
+<b>device :</b> <code>$DEVICE</code>
+<b>md5 :</b> <code>$(md5sum "$AK3_DIR/$ZIP_NAME" | cut -d' ' -f1)</code>
+<b>build took :</b> <code>$(("$DIFF" / 60)) minute, $(("$DIFF" % 60)) second</code>"
+
+# Push message to telegram
+push_message "
+<b>======================================</b>
+<b>Success Building :</b> <code>Mystic Kernel</code>
+<b>Linux Version :</b> <code>$(make kernelversion | cut -d " " -f5 | tr -d '\n')</code>
+<b>Build Date :</b> <code>$(date +"%A, %d %b %Y, %H:%M:%S")</code>
+<b>Build Using :</b> <code>$CPU $CORES thread</code>
+<b>Toolchain :</b> <code>$KBUILD_COMPILER_STRING</code>
+<b>Last Changelog :</b> <code>$(git log --pretty=format:'%s' -1)</code>
+<b>======================================</b>
+<b>Provide your feedback in the @MysticKernelDiscussion group for this Beta Build 😉</b> "

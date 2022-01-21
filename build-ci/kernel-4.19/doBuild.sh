@@ -5,67 +5,80 @@
 # Kernel Directory
 KERNEL_DIR=$PWD
 
-# Device Name
-if [[ "$*" =~ "whyred" ]]; then
-    DEVICE="whyred"
+# Start counting
+BUILD_START=$(date +"%s")
+
+# Name and version of kernel
+KERNEL_NAME="Mystic"
+KERNEL_VERSION="beta"
+
+# Device name
+if [[ "$*" =~ "a26x" ]]; then
+    DEVICE="a26x"
+    export LOCALVERSION="_$KERNEL_VERSION"
 elif [[ "$*" =~ "lavender" ]]; then
     DEVICE="lavender"
-elif [[ "$*" =~ "a26x" ]]; then
-    DEVICE="a26x"
+    export LOCALVERSION="_$KERNEL_VERSION"
+elif [[ "$*" =~ "whyred" ]]; then
+    DEVICE="whyred"
+    export LOCALVERSION="_$KERNEL_VERSION"
 fi
 
+# Export custom localversion for OC build
 if [[ "$*" =~ "oc" ]]; then
-    export LOCALVERSION="-OC"
+    export LOCALVERSION="_$KERNEL_VERSION-OC"
 fi
 
-# Setup Environtment
-AK3_DIR=$KERNEL_DIR/ak3-$DEVICE
-ZIP_DATE=$(TZ=Asia/Jakarta date +'%d%m%Y')
-KERNEL_IMG=$KERNEL_DIR/out/arch/arm64/boot/Image.gz-dtb
-SOURCE="$(git rev-parse --abbrev-ref HEAD)"
-
-if [[ "$*" =~ "clang" ]]; then
-    # Clang Setup
-    CLANG_DIR="$KERNEL_DIR/clang"
-    export PATH="$KERNEL_DIR/clang/bin:$PATH"
-    KBUILD_COMPILER_STRING="$("$CLANG_DIR"/bin/clang --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g')"
-    export KBUILD_COMPILER_STRING
-fi
-
-export ZIP_DATE
-export SOURCE
+# Setup environtment
 export ARCH=arm64
 export SUBARCH=arm64
 export KBUILD_BUILD_USER="okta_10"
-export KBUILD_BUILD_HOST="dockerci"
+export KBUILD_BUILD_HOST="ArchLinux"
+AK3_DIR=$KERNEL_DIR/ak3-$DEVICE
+KERNEL_IMG=$KERNEL_DIR/out/arch/arm64/boot/Image.gz-dtb
+ZIP_DATE=$(TZ=Asia/Jakarta date +'%Y%m%d-%H%M')
+ZIP_NAME="$KERNEL_NAME"-"$DEVICE""$LOCALVERSION"_"$ZIP_DATE".zip
 
-# Telegram Directory
-TELEGRAM=Telegram/telegram
+# Setup toolchain
+if [[ "$*" =~ "clang" ]]; then
+    CLANG_DIR="$KERNEL_DIR/clang"
+    export PATH="$KERNEL_DIR/clang/bin:$PATH"
+    CLGV="$("$CLANG_DIR"/bin/clang --version | head -n 1)"
+    BINV="$("$CLANG_DIR"/bin/ld --version | head -n 1)"
+    LLDV="$("$CLANG_DIR"/bin/ld.lld --version | head -n 1)"
+    export KBUILD_COMPILER_STRING="$CLGV - $BINV - $LLDV"
+elif [[ "$*" =~ "gcc" ]]; then
+    GCC_DIR="$KERNEL_DIR/arm64"
+    GCCV="$("$GCC_DIR"/bin/aarch64-elf-gcc --version | head -n 1)"
+    BINV="$("$GCC_DIR"/bin/aarch64-elf-ld --version | head -n 1)"
+    LLDV="$("$GCC_DIR"/bin/aarch64-elf-ld.lld --version | head -n 1)"
+    export KBUILD_COMPILER_STRING="$GCCV - $BINV - $LLDV"
+fi
 
-# Push Info Kernel to Telegram
-sendInfo() {
-    "${TELEGRAM}" -c "${CHANNEL_ID}" -H -D \
-        "$(
-            for POST in "${@}"; do
-                echo "${POST}"
-            done
-        )"
+# Telegram setup
+push_message() {
+    curl -s -X POST \
+        https://api.telegram.org/bot"{$TG_BOT_TOKEN}"/sendMessage \
+        -d chat_id="${TG_CHAT_ID}" \
+        -d text="$1" \
+        -d "parse_mode=html" \
+        -d "disable_web_page_preview=true"
 }
 
-# Push Zip Kernel to Telegram
-sendKernel() {
-    "${TELEGRAM}" -f "$(echo "$AK3_DIR"/*.zip)" \
-        -c "${CHANNEL_ID}" -H \
-        "# <code>$DEVICE</code> # <code>md5: $(md5sum "$AK3_DIR"/*.zip | cut -d' ' -f1)</code> # <code>Build Took : $(("$DIFF" / 60)) Minute, $(("$DIFF" % 60)) Second</code>"
+push_document() {
+    curl -s -X POST \
+        https://api.telegram.org/bot"{$TG_BOT_TOKEN}"/sendDocument \
+        -F chat_id="${TG_CHAT_ID}" \
+        -F document=@"$1" \
+        -F caption="$2" \
+        -F "parse_mode=html" \
+        -F "disable_web_page_preview=true"
 }
 
-# Start Count
-BUILD_START=$(date +"%s")
+# Export defconfig
+make O=out mystic-"$DEVICE"_defconfig
 
-# Export Defconfig
-make O=out vendor/mystic-"$DEVICE"_defconfig
-
-# Start Compile
+# Start compile
 if [[ "$*" =~ "clang" ]]; then
     make -j"$(nproc --all)" O=out \
         CC=clang \
@@ -82,27 +95,28 @@ elif [[ "$*" =~ "gcc" ]]; then
     make -j"$(nproc --all)" O=out ARCH=arm64
 fi
 
-# Push info while build error
+# Push message if build error
 if ! [ -a "$KERNEL_IMG" ]; then
-    sendInfo "<b>Failed building kernel for <code>$DEVICE</code> Please fix it...!</b>"
+    push_message "<b>Failed building kernel for <code>$DEVICE</code> Please fix it...!</b>"
     exit 1
 fi
-
-# End Count and Calculate Total Build Time
-BUILD_END=$(date +"%s")
-DIFF=$((BUILD_END - BUILD_START))
 
 # Make zip
 cp -r "$KERNEL_IMG" "$AK3_DIR"/
 cd "$AK3_DIR" || exit
-if [[ "$*" =~ "oc" ]]; then
-    zip -r9 Mystic-"$DEVICE"_beta"$LOCALVERSION"_"$ZIP_DATE".zip ./*
-else
-    zip -r9 Mystic-"$DEVICE"_beta_"$ZIP_DATE".zip ./*
-fi
+zip -r9 "$ZIP_NAME" ./*
 cd "$KERNEL_DIR" || exit
 
-sendKernel
+# End count and calculate total build time
+BUILD_END=$(date +"%s")
+DIFF=$((BUILD_END - BUILD_START))
+
+# Push kernel to telegram
+push_document "$AK3_DIR/$ZIP_NAME" "
+<b>device :</b> <code>$DEVICE</code>
+<b>kernel version :</b> <code>$LOCALVERSION</code>
+<b>md5 checksum :</b> <code>$(md5sum "$AK3_DIR/$ZIP_NAME" | cut -d' ' -f1)</code>
+<b>build time :</b> <code>$(("$DIFF" / 60)) minute, $(("$DIFF" % 60)) second</code>"
 
 rm -rf out/arch/arm64/boot/
 rm -rf out/.version
