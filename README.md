@@ -14,10 +14,6 @@ I only use those two Cloud CI
 ```
 ##### *Here for My [DroneCI & CircleCI](https://github.com/okta-10/kernel-blender.git) setup*
 
-###### *For CircleCI you need clone the Kernel Source from .config.yml [(See this)](https://github.com/okta-10/kernel-blender/blob/msm-4.4/.circleci/config.yml#L7)*
-
-###### *For DroneCI you can clone the Kernel Source from Script*
-
 ##
 
 ### For local, see in "build-local" folder
