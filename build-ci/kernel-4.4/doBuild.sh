@@ -38,6 +38,11 @@ elif [[ "$*" =~ "qtihaptics" ]]; then
     CONFIGVERSION="qtihaptics"
 fi
 
+# Export localversion for OC variant
+if [[ "$*" =~ "oc" ]]; then
+    export LOCALVERSION="_$KERNEL_VERSION-OC"
+fi
+
 # Setup environtment
 export ARCH=arm64
 export SUBARCH=arm64
