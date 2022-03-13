@@ -1,11 +1,11 @@
 diff --git a/arch/arm64/configs/mystic-a26x-newcam_defconfig b/arch/arm64/configs/mystic-a26x-newcam_defconfig
-index 7cb4f564604d4..c9804e75623ea 100644
+index 7fcd3e7f6ec0..b5a7d8974146 100644
 --- a/arch/arm64/configs/mystic-a26x-newcam_defconfig
 +++ b/arch/arm64/configs/mystic-a26x-newcam_defconfig
-@@ -2410,13 +2410,13 @@ CONFIG_CPU_THERMAL=y
+@@ -2415,14 +2415,13 @@ CONFIG_CPU_THERMAL=y
+ # CONFIG_THERMAL_EMULATION is not set
  CONFIG_LIMITS_MONITOR=y
  CONFIG_LIMITS_LITE_HW=y
- # CONFIG_LIMITS_LITE_HW_POLLING is not set
 -# CONFIG_THERMAL_MONITOR is not set
 +CONFIG_THERMAL_MONITOR=y
  CONFIG_THERMAL_TSENS8974=y
@@ -13,19 +13,19 @@ index 7cb4f564604d4..c9804e75623ea 100644
  CONFIG_THERMAL_QPNP=y
  CONFIG_THERMAL_QPNP_ADC_TM=y
  CONFIG_QCOM_THERMAL_LIMITS_DCVS=y
+ CONFIG_THERMAL_SWITCH=y
 -CONFIG_MSM_THERMAL_SIMPLE=y
-+# CONFIG_MSM_THERMAL_SIMPLE is not set
  # CONFIG_QCOM_SPMI_TEMP_ALARM is not set
  # CONFIG_WATCHDOG is not set
  CONFIG_SSB_POSSIBLE=y
 diff --git a/arch/arm64/configs/mystic-a26x-oldcam_defconfig b/arch/arm64/configs/mystic-a26x-oldcam_defconfig
-index 6d290908b19ed..1fcb8db0ef53b 100644
+index 2388b02f764c..1605012835be 100644
 --- a/arch/arm64/configs/mystic-a26x-oldcam_defconfig
 +++ b/arch/arm64/configs/mystic-a26x-oldcam_defconfig
-@@ -2410,13 +2410,13 @@ CONFIG_CPU_THERMAL=y
+@@ -2415,14 +2415,13 @@ CONFIG_CPU_THERMAL=y
+ # CONFIG_THERMAL_EMULATION is not set
  CONFIG_LIMITS_MONITOR=y
  CONFIG_LIMITS_LITE_HW=y
- # CONFIG_LIMITS_LITE_HW_POLLING is not set
 -# CONFIG_THERMAL_MONITOR is not set
 +CONFIG_THERMAL_MONITOR=y
  CONFIG_THERMAL_TSENS8974=y
@@ -33,19 +33,39 @@ index 6d290908b19ed..1fcb8db0ef53b 100644
  CONFIG_THERMAL_QPNP=y
  CONFIG_THERMAL_QPNP_ADC_TM=y
  CONFIG_QCOM_THERMAL_LIMITS_DCVS=y
+ CONFIG_THERMAL_SWITCH=y
 -CONFIG_MSM_THERMAL_SIMPLE=y
-+# CONFIG_MSM_THERMAL_SIMPLE is not set
+ # CONFIG_QCOM_SPMI_TEMP_ALARM is not set
+ # CONFIG_WATCHDOG is not set
+ CONFIG_SSB_POSSIBLE=y
+diff --git a/arch/arm64/configs/mystic-a26x-qtihaptics_defconfig b/arch/arm64/configs/mystic-a26x-qtihaptics_defconfig
+index 6caf3a659b20..11ed0f0b3df1 100644
+--- a/arch/arm64/configs/mystic-a26x-qtihaptics_defconfig
++++ b/arch/arm64/configs/mystic-a26x-qtihaptics_defconfig
+@@ -2415,14 +2415,13 @@ CONFIG_CPU_THERMAL=y
+ # CONFIG_THERMAL_EMULATION is not set
+ CONFIG_LIMITS_MONITOR=y
+ CONFIG_LIMITS_LITE_HW=y
+-# CONFIG_THERMAL_MONITOR is not set
++CONFIG_THERMAL_MONITOR=y
+ CONFIG_THERMAL_TSENS8974=y
+ # CONFIG_IMX_THERMAL is not set
+ CONFIG_THERMAL_QPNP=y
+ CONFIG_THERMAL_QPNP_ADC_TM=y
+ CONFIG_QCOM_THERMAL_LIMITS_DCVS=y
+ CONFIG_THERMAL_SWITCH=y
+-CONFIG_MSM_THERMAL_SIMPLE=y
  # CONFIG_QCOM_SPMI_TEMP_ALARM is not set
  # CONFIG_WATCHDOG is not set
  CONFIG_SSB_POSSIBLE=y
 diff --git a/arch/arm64/configs/mystic-a26x-tencam_defconfig b/arch/arm64/configs/mystic-a26x-tencam_defconfig
-index 74347152a335d..6b50fefca0d93 100644
+index 3ba1ca0722e5..2878bd87da9f 100644
 --- a/arch/arm64/configs/mystic-a26x-tencam_defconfig
 +++ b/arch/arm64/configs/mystic-a26x-tencam_defconfig
-@@ -2410,13 +2410,13 @@ CONFIG_CPU_THERMAL=y
+@@ -2415,14 +2415,13 @@ CONFIG_CPU_THERMAL=y
+ # CONFIG_THERMAL_EMULATION is not set
  CONFIG_LIMITS_MONITOR=y
  CONFIG_LIMITS_LITE_HW=y
- # CONFIG_LIMITS_LITE_HW_POLLING is not set
 -# CONFIG_THERMAL_MONITOR is not set
 +CONFIG_THERMAL_MONITOR=y
  CONFIG_THERMAL_TSENS8974=y
@@ -53,19 +73,19 @@ index 74347152a335d..6b50fefca0d93 100644
  CONFIG_THERMAL_QPNP=y
  CONFIG_THERMAL_QPNP_ADC_TM=y
  CONFIG_QCOM_THERMAL_LIMITS_DCVS=y
+ CONFIG_THERMAL_SWITCH=y
 -CONFIG_MSM_THERMAL_SIMPLE=y
-+# CONFIG_MSM_THERMAL_SIMPLE is not set
  # CONFIG_QCOM_SPMI_TEMP_ALARM is not set
  # CONFIG_WATCHDOG is not set
  CONFIG_SSB_POSSIBLE=y
 diff --git a/arch/arm64/configs/mystic-lavender-newcam_defconfig b/arch/arm64/configs/mystic-lavender-newcam_defconfig
-index 52356c440f132..9bddf0be1e230 100644
+index 4f38e896eed5..c66525a123c5 100644
 --- a/arch/arm64/configs/mystic-lavender-newcam_defconfig
 +++ b/arch/arm64/configs/mystic-lavender-newcam_defconfig
-@@ -2417,13 +2417,13 @@ CONFIG_CPU_THERMAL=y
+@@ -2421,14 +2421,13 @@ CONFIG_CPU_THERMAL=y
+ # CONFIG_THERMAL_EMULATION is not set
  CONFIG_LIMITS_MONITOR=y
  CONFIG_LIMITS_LITE_HW=y
- # CONFIG_LIMITS_LITE_HW_POLLING is not set
 -# CONFIG_THERMAL_MONITOR is not set
 +CONFIG_THERMAL_MONITOR=y
  CONFIG_THERMAL_TSENS8974=y
@@ -73,19 +93,19 @@ index 52356c440f132..9bddf0be1e230 100644
  CONFIG_THERMAL_QPNP=y
  CONFIG_THERMAL_QPNP_ADC_TM=y
  CONFIG_QCOM_THERMAL_LIMITS_DCVS=y
+ CONFIG_THERMAL_SWITCH=y
 -CONFIG_MSM_THERMAL_SIMPLE=y
-+# CONFIG_MSM_THERMAL_SIMPLE is not set
  # CONFIG_QCOM_SPMI_TEMP_ALARM is not set
  # CONFIG_WATCHDOG is not set
  CONFIG_SSB_POSSIBLE=y
 diff --git a/arch/arm64/configs/mystic-lavender-oldcam_defconfig b/arch/arm64/configs/mystic-lavender-oldcam_defconfig
-index bc2d3f26d7815..518e923a98820 100644
+index 80cead0c9cf8..6fdac74db0db 100644
 --- a/arch/arm64/configs/mystic-lavender-oldcam_defconfig
 +++ b/arch/arm64/configs/mystic-lavender-oldcam_defconfig
-@@ -2417,13 +2417,13 @@ CONFIG_CPU_THERMAL=y
+@@ -2421,14 +2421,13 @@ CONFIG_CPU_THERMAL=y
+ # CONFIG_THERMAL_EMULATION is not set
  CONFIG_LIMITS_MONITOR=y
  CONFIG_LIMITS_LITE_HW=y
- # CONFIG_LIMITS_LITE_HW_POLLING is not set
 -# CONFIG_THERMAL_MONITOR is not set
 +CONFIG_THERMAL_MONITOR=y
  CONFIG_THERMAL_TSENS8974=y
@@ -93,19 +113,39 @@ index bc2d3f26d7815..518e923a98820 100644
  CONFIG_THERMAL_QPNP=y
  CONFIG_THERMAL_QPNP_ADC_TM=y
  CONFIG_QCOM_THERMAL_LIMITS_DCVS=y
+ CONFIG_THERMAL_SWITCH=y
 -CONFIG_MSM_THERMAL_SIMPLE=y
-+# CONFIG_MSM_THERMAL_SIMPLE is not set
+ # CONFIG_QCOM_SPMI_TEMP_ALARM is not set
+ # CONFIG_WATCHDOG is not set
+ CONFIG_SSB_POSSIBLE=y
+diff --git a/arch/arm64/configs/mystic-lavender-qtihaptics_defconfig b/arch/arm64/configs/mystic-lavender-qtihaptics_defconfig
+index 5a13d00d66b2..30c4ff4b6bed 100644
+--- a/arch/arm64/configs/mystic-lavender-qtihaptics_defconfig
++++ b/arch/arm64/configs/mystic-lavender-qtihaptics_defconfig
+@@ -2421,14 +2421,13 @@ CONFIG_CPU_THERMAL=y
+ # CONFIG_THERMAL_EMULATION is not set
+ CONFIG_LIMITS_MONITOR=y
+ CONFIG_LIMITS_LITE_HW=y
+-# CONFIG_THERMAL_MONITOR is not set
++CONFIG_THERMAL_MONITOR=y
+ CONFIG_THERMAL_TSENS8974=y
+ # CONFIG_IMX_THERMAL is not set
+ CONFIG_THERMAL_QPNP=y
+ CONFIG_THERMAL_QPNP_ADC_TM=y
+ CONFIG_QCOM_THERMAL_LIMITS_DCVS=y
+ CONFIG_THERMAL_SWITCH=y
+-CONFIG_MSM_THERMAL_SIMPLE=y
  # CONFIG_QCOM_SPMI_TEMP_ALARM is not set
  # CONFIG_WATCHDOG is not set
  CONFIG_SSB_POSSIBLE=y
 diff --git a/arch/arm64/configs/mystic-tulip-newcam_defconfig b/arch/arm64/configs/mystic-tulip-newcam_defconfig
-index deafa734db81a..a943513a58aa0 100644
+index 5bd22d838609..1b070ea71320 100644
 --- a/arch/arm64/configs/mystic-tulip-newcam_defconfig
 +++ b/arch/arm64/configs/mystic-tulip-newcam_defconfig
-@@ -2408,13 +2408,13 @@ CONFIG_CPU_THERMAL=y
+@@ -2415,14 +2415,13 @@ CONFIG_CPU_THERMAL=y
+ # CONFIG_THERMAL_EMULATION is not set
  CONFIG_LIMITS_MONITOR=y
  CONFIG_LIMITS_LITE_HW=y
- # CONFIG_LIMITS_LITE_HW_POLLING is not set
 -# CONFIG_THERMAL_MONITOR is not set
 +CONFIG_THERMAL_MONITOR=y
  CONFIG_THERMAL_TSENS8974=y
@@ -113,19 +153,19 @@ index deafa734db81a..a943513a58aa0 100644
  CONFIG_THERMAL_QPNP=y
  CONFIG_THERMAL_QPNP_ADC_TM=y
  CONFIG_QCOM_THERMAL_LIMITS_DCVS=y
+ CONFIG_THERMAL_SWITCH=y
 -CONFIG_MSM_THERMAL_SIMPLE=y
-+# CONFIG_MSM_THERMAL_SIMPLE is not set
  # CONFIG_QCOM_SPMI_TEMP_ALARM is not set
  # CONFIG_WATCHDOG is not set
  CONFIG_SSB_POSSIBLE=y
 diff --git a/arch/arm64/configs/mystic-tulip-oldcam_defconfig b/arch/arm64/configs/mystic-tulip-oldcam_defconfig
-index 0b97db119e88a..a1b44133ae10d 100644
+index 8216cfcdbb04..0417635892b4 100644
 --- a/arch/arm64/configs/mystic-tulip-oldcam_defconfig
 +++ b/arch/arm64/configs/mystic-tulip-oldcam_defconfig
-@@ -2408,13 +2408,13 @@ CONFIG_CPU_THERMAL=y
+@@ -2415,14 +2415,13 @@ CONFIG_CPU_THERMAL=y
+ # CONFIG_THERMAL_EMULATION is not set
  CONFIG_LIMITS_MONITOR=y
  CONFIG_LIMITS_LITE_HW=y
- # CONFIG_LIMITS_LITE_HW_POLLING is not set
 -# CONFIG_THERMAL_MONITOR is not set
 +CONFIG_THERMAL_MONITOR=y
  CONFIG_THERMAL_TSENS8974=y
@@ -133,19 +173,39 @@ index 0b97db119e88a..a1b44133ae10d 100644
  CONFIG_THERMAL_QPNP=y
  CONFIG_THERMAL_QPNP_ADC_TM=y
  CONFIG_QCOM_THERMAL_LIMITS_DCVS=y
+ CONFIG_THERMAL_SWITCH=y
 -CONFIG_MSM_THERMAL_SIMPLE=y
-+# CONFIG_MSM_THERMAL_SIMPLE is not set
+ # CONFIG_QCOM_SPMI_TEMP_ALARM is not set
+ # CONFIG_WATCHDOG is not set
+ CONFIG_SSB_POSSIBLE=y
+diff --git a/arch/arm64/configs/mystic-tulip-qtihaptics_defconfig b/arch/arm64/configs/mystic-tulip-qtihaptics_defconfig
+index 35a856da4ce1..ab22118c1ce5 100644
+--- a/arch/arm64/configs/mystic-tulip-qtihaptics_defconfig
++++ b/arch/arm64/configs/mystic-tulip-qtihaptics_defconfig
+@@ -2415,14 +2415,13 @@ CONFIG_CPU_THERMAL=y
+ # CONFIG_THERMAL_EMULATION is not set
+ CONFIG_LIMITS_MONITOR=y
+ CONFIG_LIMITS_LITE_HW=y
+-# CONFIG_THERMAL_MONITOR is not set
++CONFIG_THERMAL_MONITOR=y
+ CONFIG_THERMAL_TSENS8974=y
+ # CONFIG_IMX_THERMAL is not set
+ CONFIG_THERMAL_QPNP=y
+ CONFIG_THERMAL_QPNP_ADC_TM=y
+ CONFIG_QCOM_THERMAL_LIMITS_DCVS=y
+ CONFIG_THERMAL_SWITCH=y
+-CONFIG_MSM_THERMAL_SIMPLE=y
  # CONFIG_QCOM_SPMI_TEMP_ALARM is not set
  # CONFIG_WATCHDOG is not set
  CONFIG_SSB_POSSIBLE=y
 diff --git a/arch/arm64/configs/mystic-whyred-newcam_defconfig b/arch/arm64/configs/mystic-whyred-newcam_defconfig
-index b757721660b40..2e9de8568d3ed 100644
+index 5f09094aa734..e06bedfe7f44 100644
 --- a/arch/arm64/configs/mystic-whyred-newcam_defconfig
 +++ b/arch/arm64/configs/mystic-whyred-newcam_defconfig
-@@ -2413,13 +2413,13 @@ CONFIG_CPU_THERMAL=y
+@@ -2416,14 +2416,13 @@ CONFIG_CPU_THERMAL=y
+ # CONFIG_THERMAL_EMULATION is not set
  CONFIG_LIMITS_MONITOR=y
  CONFIG_LIMITS_LITE_HW=y
- # CONFIG_LIMITS_LITE_HW_POLLING is not set
 -# CONFIG_THERMAL_MONITOR is not set
 +CONFIG_THERMAL_MONITOR=y
  CONFIG_THERMAL_TSENS8974=y
@@ -153,19 +213,19 @@ index b757721660b40..2e9de8568d3ed 100644
  CONFIG_THERMAL_QPNP=y
  CONFIG_THERMAL_QPNP_ADC_TM=y
  CONFIG_QCOM_THERMAL_LIMITS_DCVS=y
+ CONFIG_THERMAL_SWITCH=y
 -CONFIG_MSM_THERMAL_SIMPLE=y
-+# CONFIG_MSM_THERMAL_SIMPLE is not set
  # CONFIG_QCOM_SPMI_TEMP_ALARM is not set
  # CONFIG_WATCHDOG is not set
  CONFIG_SSB_POSSIBLE=y
 diff --git a/arch/arm64/configs/mystic-whyred-oldcam_defconfig b/arch/arm64/configs/mystic-whyred-oldcam_defconfig
-index ba631f8909a89..660c95da2da66 100644
+index f5af957293e8..515f099bd506 100644
 --- a/arch/arm64/configs/mystic-whyred-oldcam_defconfig
 +++ b/arch/arm64/configs/mystic-whyred-oldcam_defconfig
-@@ -2413,13 +2413,13 @@ CONFIG_CPU_THERMAL=y
+@@ -2416,14 +2416,13 @@ CONFIG_CPU_THERMAL=y
+ # CONFIG_THERMAL_EMULATION is not set
  CONFIG_LIMITS_MONITOR=y
  CONFIG_LIMITS_LITE_HW=y
- # CONFIG_LIMITS_LITE_HW_POLLING is not set
 -# CONFIG_THERMAL_MONITOR is not set
 +CONFIG_THERMAL_MONITOR=y
  CONFIG_THERMAL_TSENS8974=y
@@ -173,8 +233,28 @@ index ba631f8909a89..660c95da2da66 100644
  CONFIG_THERMAL_QPNP=y
  CONFIG_THERMAL_QPNP_ADC_TM=y
  CONFIG_QCOM_THERMAL_LIMITS_DCVS=y
+ CONFIG_THERMAL_SWITCH=y
 -CONFIG_MSM_THERMAL_SIMPLE=y
-+# CONFIG_MSM_THERMAL_SIMPLE is not set
+ # CONFIG_QCOM_SPMI_TEMP_ALARM is not set
+ # CONFIG_WATCHDOG is not set
+ CONFIG_SSB_POSSIBLE=y
+diff --git a/arch/arm64/configs/mystic-whyred-qtihaptics_defconfig b/arch/arm64/configs/mystic-whyred-qtihaptics_defconfig
+index 341b485978f7..10d7276e1b13 100644
+--- a/arch/arm64/configs/mystic-whyred-qtihaptics_defconfig
++++ b/arch/arm64/configs/mystic-whyred-qtihaptics_defconfig
+@@ -2416,14 +2416,13 @@ CONFIG_CPU_THERMAL=y
+ # CONFIG_THERMAL_EMULATION is not set
+ CONFIG_LIMITS_MONITOR=y
+ CONFIG_LIMITS_LITE_HW=y
+-# CONFIG_THERMAL_MONITOR is not set
++CONFIG_THERMAL_MONITOR=y
+ CONFIG_THERMAL_TSENS8974=y
+ # CONFIG_IMX_THERMAL is not set
+ CONFIG_THERMAL_QPNP=y
+ CONFIG_THERMAL_QPNP_ADC_TM=y
+ CONFIG_QCOM_THERMAL_LIMITS_DCVS=y
+ CONFIG_THERMAL_SWITCH=y
+-CONFIG_MSM_THERMAL_SIMPLE=y
  # CONFIG_QCOM_SPMI_TEMP_ALARM is not set
  # CONFIG_WATCHDOG is not set
  CONFIG_SSB_POSSIBLE=y
